@@ -1,34 +1,134 @@
-.App-logo {
-    height: 40vmin;
+/* Disability Pride Connect - Main Styles */
+
+/* Pride Accent Colors */
+.pride-red { color: #FF5C5C; }
+.pride-gold { color: #FFD700; }
+.pride-white { color: #F4F4F5; }
+.pride-blue { color: #38BDF8; }
+.pride-green { color: #34D399; }
+
+.bg-pride-red { background-color: #FF5C5C; }
+.bg-pride-gold { background-color: #FFD700; }
+.bg-pride-white { background-color: #F4F4F5; }
+.bg-pride-blue { background-color: #38BDF8; }
+.bg-pride-green { background-color: #34D399; }
+
+.border-pride-red { border-color: #FF5C5C; }
+.border-pride-gold { border-color: #FFD700; }
+.border-pride-white { border-color: #F4F4F5; }
+.border-pride-blue { border-color: #38BDF8; }
+.border-pride-green { border-color: #34D399; }
+
+/* Diagonal stripe decoration */
+.pride-stripes {
+    position: relative;
+    overflow: hidden;
+}
+
+.pride-stripes::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        transparent 0%,
+        transparent 35%,
+        rgba(255, 92, 92, 0.15) 36%,
+        rgba(255, 92, 92, 0.15) 40%,
+        rgba(255, 215, 0, 0.15) 41%,
+        rgba(255, 215, 0, 0.15) 45%,
+        rgba(244, 244, 245, 0.08) 46%,
+        rgba(244, 244, 245, 0.08) 50%,
+        rgba(56, 189, 248, 0.15) 51%,
+        rgba(56, 189, 248, 0.15) 55%,
+        rgba(52, 211, 153, 0.15) 56%,
+        rgba(52, 211, 153, 0.15) 60%,
+        transparent 61%
+    );
     pointer-events: none;
+    z-index: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+/* Animated entrance */
+.animate-fade-up {
+    animation: fadeUp 0.6s ease-out forwards;
+    opacity: 0;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-}
-
-.App-link {
-    color: #61dafb;
-}
-
-@keyframes App-logo-spin {
+@keyframes fadeUp {
     from {
-        transform: rotate(0deg);
+        opacity: 0;
+        transform: translateY(20px);
     }
     to {
-        transform: rotate(360deg);
+        opacity: 1;
+        transform: translateY(0);
     }
+}
+
+.animation-delay-100 { animation-delay: 0.1s; }
+.animation-delay-200 { animation-delay: 0.2s; }
+.animation-delay-300 { animation-delay: 0.3s; }
+.animation-delay-400 { animation-delay: 0.4s; }
+.animation-delay-500 { animation-delay: 0.5s; }
+
+/* Card hover effects */
+.card-glow:hover {
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+}
+
+/* Category badges */
+.badge-physical {
+    background-color: rgba(255, 92, 92, 0.2);
+    color: #FF5C5C;
+    border: 1px solid rgba(255, 92, 92, 0.3);
+}
+
+.badge-cognitive {
+    background-color: rgba(255, 215, 0, 0.2);
+    color: #FFD700;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.badge-invisible {
+    background-color: rgba(244, 244, 245, 0.2);
+    color: #F4F4F5;
+    border: 1px solid rgba(244, 244, 245, 0.3);
+}
+
+.badge-psychiatric {
+    background-color: rgba(56, 189, 248, 0.2);
+    color: #38BDF8;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.badge-sensory {
+    background-color: rgba(52, 211, 153, 0.2);
+    color: #34D399;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+/* Accessibility focus */
+:focus {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+
+/* Skip link for screen readers */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: white;
+    color: black;
+    padding: 8px 16px;
+    z-index: 100;
+    transition: top 0.3s;
+}
+
+.skip-link:focus {
+    top: 0;
 }
