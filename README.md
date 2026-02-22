@@ -299,6 +299,84 @@ The application uses **JWT (JSON Web Tokens)** for authentication:
 
 ---
 
+## Deploying on Railway
+
+The project deploys as **3 Railway services**: **Backend** (FastAPI), **Frontend** (React static), and **MongoDB** (plugin).
+
+> All necessary Railway config files (`Procfile`, `nixpacks.toml`) are already included in the repository.
+
+---
+
+### Step 1 — Create a Railway Project
+
+1. Go to [railway.app](https://railway.app) and sign in.
+2. Click **New Project → Empty Project**.
+
+---
+
+### Step 2 — Add MongoDB
+
+1. In your project, click **+ New → Database → Add MongoDB**.
+2. Railway will provision a MongoDB instance and expose a `MONGO_URL` variable — this is automatically injected into any service in the same project.
+
+---
+
+### Step 3 — Deploy the Backend
+
+1. Click **+ New → GitHub Repo**, select your repository, and set the **Root Directory** to `backend`.
+2. Railway will detect `nixpacks.toml` and build automatically.
+3. Once deployed, go to **Settings → Networking → Generate Domain** to get the backend public URL (e.g. `https://backend-xxx.railway.app`).
+4. Under **Variables**, add:
+
+| Variable | Value |
+|---|---|
+| `DB_NAME` | `disability_pride_connect` |
+| `JWT_SECRET` | A long random string (e.g. run `openssl rand -hex 32`) |
+| `CORS_ORIGINS` | *(set this after your frontend URL is known — see Step 4)* |
+
+> `MONGO_URL` and `PORT` are automatically provided by Railway — do **not** add them manually.
+
+---
+
+### Step 4 — Deploy the Frontend
+
+1. Click **+ New → GitHub Repo**, select the **same repository**, and set **Root Directory** to `frontend`.
+2. **Before the first deploy**, go to **Variables** and add:
+
+| Variable | Value |
+|---|---|
+| `REACT_APP_BACKEND_URL` | The backend public URL from Step 3 (no trailing slash) |
+
+> ⚠️ **This must be set before the build runs.** React bakes env vars into the static bundle at build time. If you forget, set the variable and trigger a manual redeploy.
+
+3. Once deployed, generate a domain for the frontend too (e.g. `https://frontend-xxx.railway.app`).
+
+---
+
+### Step 5 — Update CORS on the Backend
+
+Now that you know the frontend URL, go back to the **backend service → Variables** and set:
+
+```
+CORS_ORIGINS=https://frontend-xxx.railway.app
+```
+
+Then **redeploy the backend** (Railway → Deployments → Redeploy).
+
+---
+
+### Step 6 — Verify
+
+| Check | Expected result |
+|---|---|
+| `GET https://<backend>/api/` | `{"message": "Disability Pride Connect API", "status": "healthy"}` |
+| `https://<backend>/docs` | FastAPI Swagger UI loads |
+| `https://<frontend>/` | Landing page loads |
+| Register + Login | Redirects to dashboard; JWT stored in localStorage |
+| No CORS errors | DevTools → Network: no red CORS failures on API requests |
+
+---
+
 ## Contributing
 
 1. Fork the repository
