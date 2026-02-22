@@ -1,54 +1,95 @@
-import { useEffect } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+// Pages
+import Landing from "./pages/Landing";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Forums from "./pages/Forums";
+import ForumPost from "./pages/ForumPost";
+import Directory from "./pages/Directory";
+import Events from "./pages/Events";
+import Resources from "./pages/Resources";
+import Messages from "./pages/Messages";
+import Community from "./pages/Community";
+import Profile from "./pages/Profile";
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+    const { user, loading } = useAuth();
+    
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+                <div className="animate-pulse text-zinc-400">Loading...</div>
+            </div>
+        );
     }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
+    
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
+    
+    return children;
 };
 
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
+// Public Route - redirect to dashboard if already logged in
+const PublicRoute = ({ children }) => {
+    const { user, loading } = useAuth();
+    
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+                <div className="animate-pulse text-zinc-400">Loading...</div>
+            </div>
+        );
+    }
+    
+    if (user) {
+        return <Navigate to="/dashboard" replace />;
+    }
+    
+    return children;
+};
+
+function AppRoutes() {
+    return (
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
+            {/* Public Routes */}
+            <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />
+            <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+            <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+            
+            {/* Protected Routes */}
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/forums" element={<ProtectedRoute><Forums /></ProtectedRoute>} />
+            <Route path="/forums/:postId" element={<ProtectedRoute><ForumPost /></ProtectedRoute>} />
+            <Route path="/directory" element={<ProtectedRoute><Directory /></ProtectedRoute>} />
+            <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
+            <Route path="/resources" element={<ProtectedRoute><Resources /></ProtectedRoute>} />
+            <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
+            <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </BrowserRouter>
-    </div>
-  );
+    );
+}
+
+function App() {
+    return (
+        <div className="App">
+            <BrowserRouter>
+                <AuthProvider>
+                    <AppRoutes />
+                </AuthProvider>
+            </BrowserRouter>
+        </div>
+    );
 }
 
 export default App;
