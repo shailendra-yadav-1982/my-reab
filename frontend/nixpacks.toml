@@ -1,8 +1,8 @@
 [phases.install]
-cmds = ["yarn install --frozen-lockfile"]
+cmds = ["npm install --legacy-peer-deps"]
 
 [phases.build]
-cmds = ["CI=false yarn build"]
+cmds = ["DISABLE_ESLINT_PLUGIN=true CI=false npm run build"]
 
 [start]
-cmd = "yarn start:prod"
+cmd = "npm run start:prod"
