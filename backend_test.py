@@ -3,8 +3,8 @@ import json
 import sys
 from datetime import datetime, timezone, timedelta
 
-class SpectrumUniteAPITester:
-    def __init__(self, base_url="https://spectrum-unite.preview.emergentagent.com"):
+class DisabilityPrideConnectAPITester:
+    def __init__(self, base_url="http://localhost:8001"):
         self.base_url = f"{base_url}/api"
         self.token = None
         self.user_id = None
@@ -262,7 +262,7 @@ class SpectrumUniteAPITester:
 
     def run_comprehensive_test(self):
         """Run all tests in sequence"""
-        print("🚀 Starting Spectrum Unite API Comprehensive Test")
+        print("🚀 Starting DisabilityPrideConnect API Comprehensive Test")
         print("=" * 60)
         
         # Basic health checks
@@ -270,8 +270,8 @@ class SpectrumUniteAPITester:
         self.test_stats()
         
         # Authentication tests
-        if not self.test_user_login():
-            print("❌ Cannot continue without authentication")
+        if not self.test_user_registration():
+            print("❌ Registration failed")
             return False
             
         self.test_auth_me()
@@ -299,7 +299,7 @@ class SpectrumUniteAPITester:
         return success_rate > 80
 
 def main():
-    tester = SpectrumUniteAPITester()
+    tester = DisabilityPrideConnectAPITester()
     success = tester.run_comprehensive_test()
     return 0 if success else 1
 
