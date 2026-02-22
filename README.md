@@ -84,31 +84,23 @@ The platform includes forums, a service-provider directory, event management, pr
 my-reab/
 ├── backend/
 │   ├── server.py            # FastAPI application & all API routes
-│   └── requirements.txt     # Python dependencies
+│   ├── requirements.txt     # Python dependencies
+│   ├── Procfile             # Railway start command
+│   └── nixpacks.toml         # Railway build config
 ├── frontend/
 │   ├── src/
 │   │   ├── App.js           # Root component with routing
 │   │   ├── pages/           # Page-level components
-│   │   │   ├── Landing.jsx
-│   │   │   ├── Login.jsx
-│   │   │   ├── Register.jsx
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── Forums.jsx
-│   │   │   ├── ForumPost.jsx
-│   │   │   ├── Directory.jsx
-│   │   │   ├── Events.jsx
-│   │   │   ├── Resources.jsx
-│   │   │   ├── Messages.jsx
-│   │   │   ├── Community.jsx
-│   │   │   └── Profile.jsx
 │   │   ├── components/      # Reusable UI components
 │   │   ├── context/         # React Context (AuthContext)
 │   │   ├── hooks/           # Custom React hooks
 │   │   └── lib/             # Utility functions
 │   ├── public/
 │   ├── package.json
-│   ├── craco.config.js
-│   └── tailwind.config.js
+│   ├── craco.config.js      # CRACO configuration
+│   ├── tailwind.config.js   # Tailwind configuration
+│   ├── Procfile             # Railway start command
+│   └── nixpacks.toml         # Railway build config
 ├── tests/                   # Test files
 ├── backend_test.py          # Backend integration tests
 └── README.md
@@ -120,9 +112,9 @@ my-reab/
 
 ### Prerequisites
 
-- **Node.js** v18+ and **Yarn** v1.22+
+- **Node.js** v20+ and **npm**
 - **Python** 3.10+
-- **MongoDB** instance (local or cloud, e.g. MongoDB Atlas)
+- **MongoDB** instance (local on port 27017 or cloud Atlas)
 
 ---
 
@@ -157,7 +149,7 @@ my-reab/
 
 5. **Start the server:**
    ```bash
-   uvicorn server:app --reload --port 8001
+   python -m uvicorn server:app --reload --port 8001
    ```
    The API will be available at `http://localhost:8001`  
    Interactive docs at `http://localhost:8001/docs`
@@ -173,18 +165,19 @@ my-reab/
 
 2. **Install dependencies:**
    ```bash
-   yarn install
+   npm install --legacy-peer-deps
    ```
+   *(Note: `--legacy-peer-deps` is required for dependency resolution)*
 
 3. **Start the development server:**
    ```bash
-   yarn start
+   npm start
    ```
    The app will open at `http://localhost:3000`
 
 4. **Build for production:**
    ```bash
-   yarn build
+   npm run build
    ```
 
 ---
