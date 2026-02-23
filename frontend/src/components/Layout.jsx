@@ -22,6 +22,7 @@ import {
     Settings
 } from 'lucide-react';
 import { useState } from 'react';
+import { PrideLogo } from './PrideLogo';
 
 const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: Home },
@@ -56,9 +57,7 @@ export const Layout = ({ children }) => {
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
                         <Link to={user ? '/dashboard' : '/'} className="flex items-center gap-3" data-testid="nav-logo">
-                            <div className="w-10 h-10 rounded-lg flex items-center justify-center pride-border-left bg-[#18181B]">
-                                <span className="font-lexend font-bold text-lg">DP</span>
-                            </div>
+                            <PrideLogo className="w-10 h-10" />
                             <span className="font-lexend font-semibold text-lg hidden sm:block">Pride Connect</span>
                         </Link>
 
@@ -72,11 +71,10 @@ export const Layout = ({ children }) => {
                                         <Link
                                             key={item.path}
                                             to={item.path}
-                                            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                                                isActive
-                                                    ? 'bg-white/10 text-white'
-                                                    : 'text-zinc-400 hover:text-white hover:bg-white/5'
-                                            }`}
+                                            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${isActive
+                                                ? 'bg-white/10 text-white'
+                                                : 'text-zinc-400 hover:text-white hover:bg-white/5'
+                                                }`}
                                             data-testid={`nav-${item.label.toLowerCase()}`}
                                         >
                                             <Icon className="w-4 h-4" />
@@ -168,11 +166,10 @@ export const Layout = ({ children }) => {
                                         key={item.path}
                                         to={item.path}
                                         onClick={() => setMobileMenuOpen(false)}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                                            isActive
-                                                ? 'bg-white/10 text-white'
-                                                : 'text-zinc-400 hover:text-white hover:bg-white/5'
-                                        }`}
+                                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive
+                                            ? 'bg-white/10 text-white'
+                                            : 'text-zinc-400 hover:text-white hover:bg-white/5'
+                                            }`}
                                         data-testid={`mobile-nav-${item.label.toLowerCase()}`}
                                     >
                                         <Icon className="w-5 h-5" />
@@ -196,13 +193,11 @@ export const Layout = ({ children }) => {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         <div className="col-span-1 md:col-span-2">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 rounded-lg flex items-center justify-center pride-border-left bg-[#18181B]">
-                                    <span className="font-lexend font-bold text-lg">DP</span>
-                                </div>
+                                <PrideLogo className="w-10 h-10" />
                                 <span className="font-lexend font-semibold text-lg">Pride Connect</span>
                             </div>
                             <p className="text-zinc-400 text-sm leading-relaxed max-w-md">
-                                A global platform connecting people with disabilities, service providers, and NGOs. 
+                                A global platform connecting people with disabilities, service providers, and NGOs.
                                 Building community, breaking barriers, celebrating pride.
                             </p>
                             <div className="flex gap-2 mt-4">
