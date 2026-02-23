@@ -13,6 +13,13 @@ from datetime import datetime, timezone, timedelta
 import bcrypt
 import jwt
 
+# Configure logging early
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
@@ -774,11 +781,7 @@ else:
     logger.info(f"CORS initialized with origins: {origins}")
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+# (Moved to top)
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
