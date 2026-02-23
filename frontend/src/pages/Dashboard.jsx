@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
+import SEO from '../components/SEO';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { DisabilityBadge } from '../components/DisabilityBadge';
@@ -64,6 +65,10 @@ export default function Dashboard() {
 
     return (
         <Layout>
+            <SEO
+                title="Dashboard"
+                description="Your personalized overview of community activity, forums, and upcoming events."
+            />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Welcome Section */}
                 <div className="mb-8" data-testid="welcome-section">

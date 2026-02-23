@@ -1,6 +1,7 @@
 import "@/App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { HelmetProvider } from "react-helmet-async";
 
 // Pages
 import Landing from "./pages/Landing";
@@ -85,11 +86,13 @@ function AppRoutes() {
 function App() {
     return (
         <div className="App">
-            <BrowserRouter>
-                <AuthProvider>
-                    <AppRoutes />
-                </AuthProvider>
-            </BrowserRouter>
+            <HelmetProvider>
+                <BrowserRouter>
+                    <AuthProvider>
+                        <AppRoutes />
+                    </AuthProvider>
+                </BrowserRouter>
+            </HelmetProvider>
         </div>
     );
 }

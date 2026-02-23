@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
+import SEO from '../components/SEO';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -64,6 +65,10 @@ export default function Profile() {
 
     return (
         <Layout>
+            <SEO
+                title="Your Profile"
+                description="Manage your Disability Pride Connect profile, preferences, and community presence."
+            />
             <Toaster position="top-center" richColors />
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Profile Header */}

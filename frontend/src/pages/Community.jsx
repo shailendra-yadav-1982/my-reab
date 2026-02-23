@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Layout } from '../components/Layout';
+import SEO from '../components/SEO';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -67,6 +68,10 @@ export default function Community() {
 
     return (
         <Layout>
+            <SEO
+                title="Community"
+                description="Meet and connect with members of our inclusive global community. Build meaningful relationships and share support."
+            />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
                 <div className="mb-8" data-testid="community-header">

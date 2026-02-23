@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
+import SEO from '../components/SEO';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -104,6 +105,11 @@ export default function Forums() {
 
     return (
         <Layout>
+            <SEO
+                title="Community Forums"
+                description="Join the conversation on our community forums. Discuss, share, and connect with people who understand your experiences."
+                keywords="disability forums, community discussion, peer support, advocacy discussion"
+            />
             <Toaster position="top-center" richColors />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
@@ -227,8 +233,8 @@ export default function Forums() {
                             key={cat.value}
                             onClick={() => setSelectedCategory(cat.value === selectedCategory ? 'all' : cat.value)}
                             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat.value
-                                    ? 'bg-white text-black'
-                                    : 'bg-[#18181B] border border-[#27272A] text-zinc-300 hover:border-white/30'
+                                ? 'bg-white text-black'
+                                : 'bg-[#18181B] border border-[#27272A] text-zinc-300 hover:border-white/30'
                                 }`}
                             data-testid={`category-pill-${cat.value}`}
                         >

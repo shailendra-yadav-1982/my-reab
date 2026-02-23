@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -72,8 +73,12 @@ export default function Register() {
 
     return (
         <div className="min-h-screen bg-[#121212] flex items-center justify-center px-4 py-12">
+            <SEO
+                title="Join Us"
+                description="Create an account and join our inclusive community. Connect with advocacy groups, service providers, and more."
+            />
             <Toaster position="top-center" richColors />
-            
+
             <div className="w-full max-w-lg">
                 <Link to="/" className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors mb-8" data-testid="back-link">
                     <ArrowLeft className="w-4 h-4" />

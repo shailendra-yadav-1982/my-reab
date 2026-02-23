@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
+import SEO from '../components/SEO';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -124,6 +125,11 @@ export default function Directory() {
 
     return (
         <Layout>
+            <SEO
+                title="Service Directory"
+                description="Find trusted service providers, NGOs, and support organizations specializing in disability services near you."
+                keywords="disability services, healthcare providers, disability NGOs, support organizations"
+            />
             <Toaster position="top-center" richColors />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}

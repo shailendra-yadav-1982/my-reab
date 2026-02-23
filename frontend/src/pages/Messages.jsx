@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
+import SEO from '../components/SEO';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -115,6 +116,10 @@ export default function Messages() {
 
     return (
         <Layout>
+            <SEO
+                title="Messages"
+                description="Connect privately with other members of the Disability Pride Connect community."
+            />
             <Toaster position="top-center" richColors />
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-testid="messages-page">
                 <div className="h-[calc(100vh-12rem)] flex bg-[#18181B] rounded-2xl border border-[#27272A] overflow-hidden">
@@ -220,8 +225,8 @@ export default function Messages() {
                                                 >
                                                     <div
                                                         className={`max-w-[70%] px-4 py-3 rounded-2xl ${isMe
-                                                                ? 'bg-white text-black rounded-br-sm'
-                                                                : 'bg-[#27272A] text-white rounded-bl-sm'
+                                                            ? 'bg-white text-black rounded-br-sm'
+                                                            : 'bg-[#27272A] text-white rounded-bl-sm'
                                                             }`}
                                                     >
                                                         <p className="text-sm">{msg.content}</p>

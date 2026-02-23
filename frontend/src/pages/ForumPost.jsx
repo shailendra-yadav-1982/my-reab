@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
+import SEO from '../components/SEO';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
@@ -112,6 +113,10 @@ export default function ForumPost() {
 
     return (
         <Layout>
+            <SEO
+                title={post?.title || "Forum Post"}
+                description={post?.content?.substring(0, 160) || "Join the discussion on Disability Pride Connect."}
+            />
             <Toaster position="top-center" richColors />
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Back Link */}
