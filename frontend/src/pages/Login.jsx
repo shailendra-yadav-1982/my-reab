@@ -34,7 +34,7 @@ export default function Login() {
     return (
         <div className="min-h-screen bg-[#121212] flex items-center justify-center px-4">
             <Toaster position="top-center" richColors />
-            
+
             <div className="w-full max-w-md">
                 <Link to="/" className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors mb-8" data-testid="back-link">
                     <ArrowLeft className="w-4 h-4" />
@@ -102,6 +102,24 @@ export default function Login() {
                                 {loading ? 'Signing in...' : 'Sign In'}
                             </Button>
                         </form>
+
+                        <div className="relative my-6">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t border-[#27272A]"></span>
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                                <span className="bg-[#18181B] px-2 text-zinc-500">Or continue with</span>
+                            </div>
+                        </div>
+
+                        <Button
+                            variant="outline"
+                            className="w-full border-[#27272A] hover:bg-[#27272A] text-white"
+                            onClick={() => window.location.href = `${process.env.REACT_APP_BACKEND_URL}/api/auth/sso/login`}
+                            data-testid="sso-login-btn"
+                        >
+                            Log in with SSO
+                        </Button>
 
                         <div className="mt-6 text-center text-sm text-zinc-400">
                             Don't have an account?{' '}

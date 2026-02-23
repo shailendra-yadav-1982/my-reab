@@ -1,7 +1,10 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, Request
+from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
+from authlib.integrations.starlette_client import OAuth
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
@@ -49,6 +52,24 @@ JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
 security = HTTPBearer()
+
+# OIDC Configuration
+oauth = OAuth()
+OIDC_ISSUER_URL = os.environ.get('OIDC_ISSUER_URL')
+OIDC_CLIENT_ID = os.environ.get('OIDC_CLIENT_ID')
+OIDC_CLIENT_SECRET = os.environ.get('OIDC_CLIENT_SECRET')
+
+if OIDC_ISSUER_URL and OIDC_CLIENT_ID and OIDC_CLIENT_SECRET:
+    oauth.register(
+        name='oidc',
+        client_id=OIDC_CLIENT_ID,
+        client_secret=OIDC_CLIENT_SECRET,
+        server_metadata_url=f"{OIDC_ISSUER_URL.rstrip('/')}/.well-known/openid-configuration",
+        client_kwargs={'scope': 'openid email profile'},
+    )
+    logger.info(f"OIDC client registered with issuer: {OIDC_ISSUER_URL}")
+else:
+    logger.warning("OIDC configuration incomplete. SSO will not be available.")
 
 # Create the main app
 app = FastAPI(title="Disability Pride Connect API")
@@ -751,6 +772,79 @@ async def get_stats():
 async def root():
     return {"message": "Disability Pride Connect API", "status": "healthy"}
 
+# ============== SSO ROUTES ==============
+
+@api_router.get("/auth/sso/login")
+async def sso_login(request: Request):
+    if not OIDC_ISSUER_URL:
+        raise HTTPException(status_code=400, detail="SSO not configured")
+    
+    redirect_uri = str(request.url_for('sso_callback'))
+    # If running behind a proxy or on Railway, ensure https
+    if os.environ.get('RAILWAY_STATIC_URL') or os.environ.get('ENVIRONMENT') == 'production':
+        redirect_uri = redirect_uri.replace('http://', 'https://')
+        
+    return await oauth.oidc.authorize_redirect(request, redirect_uri)
+
+@api_router.get("/auth/sso/callback")
+async def sso_callback(request: Request):
+    if not OIDC_ISSUER_URL:
+        raise HTTPException(status_code=400, detail="SSO not configured")
+        
+    try:
+        token = await oauth.oidc.authorize_access_token(request)
+        user_info = token.get('userinfo')
+        if not user_info:
+            raise HTTPException(status_code=400, detail="Failed to get user info from OIDC provider")
+            
+        email = user_info.get('email')
+        name = user_info.get('name', email.split('@')[0])
+        oidc_sub = user_info.get('sub')
+        
+        # Check if user exists by email or OIDC sub
+        user = await db.users.find_one({"$or": [{"email": email}, {"oidc_sub": oidc_sub}]})
+        
+        if not user:
+            # Create a new user from OIDC profile
+            user_id = str(uuid.uuid4())
+            new_user = {
+                "id": user_id,
+                "email": email,
+                "name": name,
+                "user_type": "individual", # Default type
+                "oidc_sub": oidc_sub,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "last_login": datetime.now(timezone.utc).isoformat()
+            }
+            await db.users.insert_one(new_user)
+            user = new_user
+        else:
+            # Update last login and ensure oidc_sub is linked
+            await db.users.update_one(
+                {"id": user["id"]},
+                {"$set": {
+                    "last_login": datetime.now(timezone.utc).isoformat(),
+                    "oidc_sub": oidc_sub
+                }}
+            )
+            
+        # Issue internal JWT
+        access_token = jwt.encode(
+            {"user_id": user["id"], "exp": datetime.now(timezone.utc) + timedelta(hours=JWT_EXPIRATION_HOURS)},
+            JWT_SECRET,
+            algorithm=JWT_ALGORITHM
+        )
+        
+        # Redirect back to frontend with token
+        frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+        return RedirectResponse(url=f"{frontend_url.rstrip('/')}/sso-callback?token={access_token}")
+        
+    except Exception as e:
+        logger.error(f"SSO Callback failed: {str(e)}")
+        # Redirect to frontend login with error
+        frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+        return RedirectResponse(url=f"{frontend_url.rstrip('/')}/login?error=sso_failed")
+
 # Include the router in the main app
 app.include_router(api_router)
 
@@ -779,6 +873,13 @@ else:
         allow_headers=["*"],
     )
     logger.info(f"CORS initialized with origins: {origins}")
+
+# Sessions are required for Authlib OIDC
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.environ.get('SESSION_SECRET', JWT_SECRET),
+    max_age=3600 # 1 hour
+)
 
 # Configure logging
 # (Moved to top)

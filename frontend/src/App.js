@@ -14,12 +14,13 @@ import Events from "./pages/Events";
 import Resources from "./pages/Resources";
 import Messages from "./pages/Messages";
 import Community from "./pages/Community";
+import SSOCallback from "./pages/SSOCallback";
 import Profile from "./pages/Profile";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
-    
+
     if (loading) {
         return (
             <div className="min-h-screen bg-[#121212] flex items-center justify-center">
@@ -27,18 +28,18 @@ const ProtectedRoute = ({ children }) => {
             </div>
         );
     }
-    
+
     if (!user) {
         return <Navigate to="/login" replace />;
     }
-    
+
     return children;
 };
 
 // Public Route - redirect to dashboard if already logged in
 const PublicRoute = ({ children }) => {
     const { user, loading } = useAuth();
-    
+
     if (loading) {
         return (
             <div className="min-h-screen bg-[#121212] flex items-center justify-center">
@@ -46,11 +47,11 @@ const PublicRoute = ({ children }) => {
             </div>
         );
     }
-    
+
     if (user) {
         return <Navigate to="/dashboard" replace />;
     }
-    
+
     return children;
 };
 
@@ -61,7 +62,8 @@ function AppRoutes() {
             <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-            
+            <Route path="/sso-callback" element={<PublicRoute><SSOCallback /></PublicRoute>} />
+
             {/* Protected Routes */}
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/forums" element={<ProtectedRoute><Forums /></ProtectedRoute>} />
@@ -73,7 +75,7 @@ function AppRoutes() {
             <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            
+
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
