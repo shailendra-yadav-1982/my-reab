@@ -7,6 +7,7 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Toaster, toast } from 'sonner';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { API_URL as API } from '../config';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -115,7 +116,7 @@ export default function Login() {
                         <Button
                             variant="outline"
                             className="w-full border-[#27272A] hover:bg-[#27272A] text-white"
-                            onClick={() => window.location.href = `${process.env.REACT_APP_BACKEND_URL}/api/auth/sso/login`}
+                            onClick={() => window.location.href = `${API}/auth/sso/login`}
                             data-testid="sso-login-btn"
                         >
                             Log in with SSO
