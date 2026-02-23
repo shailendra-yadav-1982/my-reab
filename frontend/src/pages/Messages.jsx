@@ -9,7 +9,7 @@ import { Toaster, toast } from 'sonner';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Search, Send, MessageSquare, ArrowLeft } from 'lucide-react';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { API_URL as API } from '../config';
 
 export default function Messages() {
     const { user } = useAuth();
@@ -69,7 +69,7 @@ export default function Messages() {
         }
         try {
             const response = await axios.get(`${API}/users?limit=10`);
-            const filtered = response.data.filter(u => 
+            const filtered = response.data.filter(u =>
                 u.id !== user.id && u.name.toLowerCase().includes(query.toLowerCase())
             );
             setSearchResults(filtered);
@@ -158,9 +158,8 @@ export default function Messages() {
                                     <button
                                         key={conv.user_id}
                                         onClick={() => setSelectedUser(conv)}
-                                        className={`w-full p-4 text-left hover:bg-[#27272A] transition-colors flex items-center gap-3 ${
-                                            selectedUser?.user_id === conv.user_id ? 'bg-[#27272A]' : ''
-                                        }`}
+                                        className={`w-full p-4 text-left hover:bg-[#27272A] transition-colors flex items-center gap-3 ${selectedUser?.user_id === conv.user_id ? 'bg-[#27272A]' : ''
+                                            }`}
                                         data-testid={`conversation-${conv.user_id}`}
                                     >
                                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pride-red to-pride-gold flex items-center justify-center flex-shrink-0">
@@ -220,11 +219,10 @@ export default function Messages() {
                                                     data-testid={`message-${msg.id}`}
                                                 >
                                                     <div
-                                                        className={`max-w-[70%] px-4 py-3 rounded-2xl ${
-                                                            isMe
+                                                        className={`max-w-[70%] px-4 py-3 rounded-2xl ${isMe
                                                                 ? 'bg-white text-black rounded-br-sm'
                                                                 : 'bg-[#27272A] text-white rounded-bl-sm'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         <p className="text-sm">{msg.content}</p>
                                                         <span className={`text-xs ${isMe ? 'text-zinc-600' : 'text-zinc-500'} mt-1 block`}>

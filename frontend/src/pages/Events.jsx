@@ -16,7 +16,7 @@ import { Toaster, toast } from 'sonner';
 import { Search, Plus, MapPin, Calendar as CalendarIcon, Clock, Users, Video, Filter } from 'lucide-react';
 import { format } from 'date-fns';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { API_URL as API } from '../config';
 
 const eventTypes = [
     { value: 'workshop', label: 'Workshop' },
@@ -70,7 +70,7 @@ export default function Events() {
             if (selectedType && selectedType !== 'all') params.append('event_type', selectedType);
             if (showVirtualOnly) params.append('is_virtual', 'true');
             params.append('upcoming', 'true');
-            
+
             const response = await axios.get(`${API}/events?${params.toString()}`);
             setEvents(response.data);
         } catch (error) {
@@ -134,8 +134,8 @@ export default function Events() {
         }
         try {
             const response = await axios.post(`${API}/events/${eventId}/attend`);
-            setEvents(events.map(e => 
-                e.id === eventId 
+            setEvents(events.map(e =>
+                e.id === eventId
                     ? { ...e, attendees_count: response.data.attending ? e.attendees_count + 1 : e.attendees_count - 1 }
                     : e
             ));
@@ -274,11 +274,10 @@ export default function Events() {
                                                 key={feature}
                                                 type="button"
                                                 onClick={() => handleFeatureToggle(feature)}
-                                                className={`px-3 py-2 rounded-lg text-sm text-left transition-colors ${
-                                                    newEvent.accessibility_features.includes(feature)
+                                                className={`px-3 py-2 rounded-lg text-sm text-left transition-colors ${newEvent.accessibility_features.includes(feature)
                                                         ? 'bg-pride-green/20 text-pride-green border border-pride-green/30'
                                                         : 'bg-[#27272A] text-zinc-300 border border-transparent hover:border-white/20'
-                                                }`}
+                                                    }`}
                                                 data-testid={`accessibility-${feature.toLowerCase().replace(/ /g, '-')}`}
                                             >
                                                 {feature}
@@ -355,7 +354,7 @@ export default function Events() {
                                     </div>
                                     <h3 className="font-lexend text-lg font-semibold mb-2">{event.title}</h3>
                                     <p className="text-zinc-400 text-sm line-clamp-2 mb-4">{event.description}</p>
-                                    
+
                                     <div className="flex items-center gap-2 text-sm text-zinc-400 mb-2">
                                         {event.is_virtual ? (
                                             <>

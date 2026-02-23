@@ -9,7 +9,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Toaster, toast } from 'sonner';
 import { ArrowLeft, Heart, MessageSquare, Clock, Send } from 'lucide-react';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { API_URL as API } from '../config';
 
 export default function ForumPost() {
     const { postId } = useParams();
@@ -168,7 +168,7 @@ export default function ForumPost() {
                 {/* Comments Section */}
                 <div data-testid="comments-section">
                     <h2 className="font-lexend text-xl font-semibold mb-6">Comments ({comments.length})</h2>
-                    
+
                     {/* Comment Form */}
                     {user ? (
                         <form onSubmit={handleSubmitComment} className="mb-8" data-testid="comment-form">

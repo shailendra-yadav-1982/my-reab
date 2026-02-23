@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Toaster, toast } from 'sonner';
 import { Search, Plus, BookOpen, ExternalLink, Eye, Filter } from 'lucide-react';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { API_URL as API } from '../config';
 
 const categories = [
     { value: 'guide', label: 'Guides & How-Tos', color: '#FFD700' },
@@ -51,7 +51,7 @@ export default function Resources() {
             const params = new URLSearchParams();
             if (selectedCategory && selectedCategory !== 'all') params.append('category', selectedCategory);
             if (searchQuery) params.append('search', searchQuery);
-            
+
             const response = await axios.get(`${API}/resources?${params.toString()}`);
             setResources(response.data);
         } catch (error) {
@@ -243,11 +243,10 @@ export default function Resources() {
                         <button
                             key={cat.value}
                             onClick={() => setSelectedCategory(cat.value === selectedCategory ? 'all' : cat.value)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                                selectedCategory === cat.value
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat.value
                                     ? 'bg-white text-black'
                                     : 'bg-[#18181B] border border-[#27272A] text-zinc-300 hover:border-white/30'
-                            }`}
+                                }`}
                             data-testid={`category-pill-${cat.value}`}
                         >
                             <span className="flex items-center gap-2">
@@ -287,7 +286,7 @@ export default function Resources() {
                                             {resource.title}
                                         </h3>
                                         <p className="text-zinc-400 text-sm line-clamp-3 mb-4">{resource.description}</p>
-                                        
+
                                         <div className="text-xs text-zinc-500 mb-4">
                                             By {resource.author_name} • {new Date(resource.created_at).toLocaleDateString()}
                                         </div>

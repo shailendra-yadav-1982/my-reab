@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Toaster, toast } from 'sonner';
 import { Search, Plus, MessageSquare, Heart, Clock, Filter } from 'lucide-react';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { API_URL as API } from '../config';
 
 const categories = [
     { value: 'general', label: 'General Discussion', color: '#F4F4F5' },
@@ -46,7 +46,7 @@ export default function Forums() {
             const params = new URLSearchParams();
             if (selectedCategory && selectedCategory !== 'all') params.append('category', selectedCategory);
             if (searchQuery) params.append('search', searchQuery);
-            
+
             const response = await axios.get(`${API}/forums?${params.toString()}`);
             setPosts(response.data);
         } catch (error) {
@@ -87,8 +87,8 @@ export default function Forums() {
         }
         try {
             const response = await axios.post(`${API}/forums/${postId}/like`);
-            setPosts(posts.map(p => 
-                p.id === postId 
+            setPosts(posts.map(p =>
+                p.id === postId
                     ? { ...p, likes: response.data.liked ? p.likes + 1 : p.likes - 1 }
                     : p
             ));
@@ -226,11 +226,10 @@ export default function Forums() {
                         <button
                             key={cat.value}
                             onClick={() => setSelectedCategory(cat.value === selectedCategory ? 'all' : cat.value)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                                selectedCategory === cat.value
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat.value
                                     ? 'bg-white text-black'
                                     : 'bg-[#18181B] border border-[#27272A] text-zinc-300 hover:border-white/30'
-                            }`}
+                                }`}
                             data-testid={`category-pill-${cat.value}`}
                         >
                             <span className="flex items-center gap-2">

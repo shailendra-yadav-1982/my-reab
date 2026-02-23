@@ -16,13 +16,28 @@ import jwt
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# Helper to get required env var or raise clear error
+def get_env_required(name: str) -> str:
+    val = os.environ.get(name)
+    if not val:
+        logger.error(f"Critical environment variable '{name}' is missing!")
+        # On Railway, failing fast with a clear error is better than a KeyError later
+        raise RuntimeError(f"ENVIRONMENT ERROR: '{name}' is required but not set.")
+    return val
+
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+try:
+    mongo_url = get_env_required('MONGO_URL')
+    db_name = get_env_required('DB_NAME')
+    client = AsyncIOMotorClient(mongo_url)
+    db = client[db_name]
+except Exception as e:
+    logger.error(f"Failed to initialize database: {str(e)}")
+    # We allow the app to boot so the user can see the error in logs
+    db = None
 
 # JWT Configuration
-JWT_SECRET = os.environ['JWT_SECRET']
+JWT_SECRET = os.environ.get('JWT_SECRET', 'temp-secret-change-me-in-production')
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
@@ -732,13 +747,31 @@ async def root():
 # Include the router in the main app
 app.include_router(api_router)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# CORS Configuration
+# Note: allow_credentials=True REQUIRES specific origins (no "*")
+origins = os.environ.get('CORS_ORIGINS', '').split(',')
+origins = [o.strip() for o in origins if o.strip()]
+
+if not origins:
+    # Development mode: allow all but no credentials (safer for local dev)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    logger.warning("CORS initialized with wildcards and NO credentials (CORS_ORIGINS not set)")
+else:
+    # Production mode: specific origins WITH credentials
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    logger.info(f"CORS initialized with origins: {origins}")
 
 # Configure logging
 logging.basicConfig(

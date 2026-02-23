@@ -14,7 +14,7 @@ import { Toaster, toast } from 'sonner';
 import { DisabilityBadge } from '../components/DisabilityBadge';
 import { Search, Plus, MapPin, Globe, Mail, Phone, Star, Filter, Building2 } from 'lucide-react';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { API_URL as API } from '../config';
 
 const serviceTypes = [
     'Healthcare', 'Therapy', 'Rehabilitation', 'Education', 'Employment',
@@ -61,7 +61,7 @@ export default function Directory() {
             if (selectedService && selectedService !== 'all') params.append('service', selectedService);
             if (selectedFocus && selectedFocus !== 'all') params.append('disability_focus', selectedFocus);
             if (searchQuery) params.append('search', searchQuery);
-            
+
             const response = await axios.get(`${API}/providers?${params.toString()}`);
             setProviders(response.data);
         } catch (error) {
@@ -327,7 +327,7 @@ export default function Directory() {
                                     </div>
                                     <h3 className="font-lexend text-lg font-semibold mb-2">{provider.name}</h3>
                                     <p className="text-zinc-400 text-sm line-clamp-2 mb-4">{provider.description}</p>
-                                    
+
                                     <div className="flex items-center gap-2 text-sm text-zinc-400 mb-4">
                                         <MapPin className="w-4 h-4" />
                                         {provider.location}

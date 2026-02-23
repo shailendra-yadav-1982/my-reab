@@ -9,7 +9,7 @@ import { DisabilityBadge } from '../components/DisabilityBadge';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Users, MessageSquare, Filter } from 'lucide-react';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { API_URL as API } from '../config';
 
 const userTypes = [
     { value: 'all', label: 'All Members' },
@@ -45,7 +45,7 @@ export default function Community() {
             const params = new URLSearchParams();
             if (selectedType && selectedType !== 'all') params.append('user_type', selectedType);
             if (selectedCategory && selectedCategory !== 'all') params.append('disability_category', selectedCategory);
-            
+
             const response = await axios.get(`${API}/users?${params.toString()}`);
             setMembers(response.data);
         } catch (error) {
@@ -55,7 +55,7 @@ export default function Community() {
         }
     };
 
-    const filteredMembers = members.filter(member => 
+    const filteredMembers = members.filter(member =>
         member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         member.location?.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -129,7 +129,7 @@ export default function Community() {
                                     </div>
                                     <h3 className="font-lexend font-semibold mb-1">{member.name}</h3>
                                     <p className="text-xs text-zinc-500 mb-3">{getUserTypeLabel(member.user_type)}</p>
-                                    
+
                                     {member.location && (
                                         <div className="flex items-center justify-center gap-1 text-sm text-zinc-400 mb-3">
                                             <MapPin className="w-3 h-3" />
