@@ -45,7 +45,8 @@ The platform includes forums, a service-provider directory, event management, pr
 | 📚 **Resources** | Share and discover articles, links, and guides |
 | 👤 **Profiles** | View and edit personal profiles with disability categories |
 | 🏘️ **Community** | Community overview dashboard |
-| 📊 **Dashboard** | Personalized activity feed and stats |
+| 📊 **Dashboard** | Personalized activity feed, stats, and connection requests management |
+| 🤝 **Connections** | Send and manage connection requests with community members |
 
 ---
 
@@ -91,7 +92,7 @@ my-reab/
 │   ├── src/
 │   │   ├── App.js           # Root component with routing
 │   │   ├── pages/           # Page-level components
-│   │   ├── components/      # Reusable UI components
+│   │   ├── components/      # Reusable UI components (ConnectButton, PendingRequests, etc.)
 │   │   ├── context/         # React Context (AuthContext)
 │   │   ├── hooks/           # Custom React hooks
 │   │   └── lib/             # Utility functions
@@ -256,6 +257,13 @@ All API routes are prefixed with `/api`.
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
 | `GET` | `/api/stats` | ❌ | Platform-wide statistics (users, providers, events, etc.) |
+| | | | |
+| **Connections** | | | |
+| `POST` | `/api/connections/request/{user_id}` | ✅ | Send a connection request |
+| `PUT` | `/api/connections/respond/{id}` | ✅ | Accept/Decline a connection request |
+| `GET` | `/api/connections/pending` | ✅ | List incoming pending requests |
+| `GET` | `/api/connections` | ✅ | List accepted connections |
+| `GET` | `/api/connections/status/{id}` | ✅ | Get connection status with a user |
 
 ---
 

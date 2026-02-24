@@ -17,6 +17,7 @@ import {
     TrendingUp,
     Clock
 } from 'lucide-react';
+import { PendingRequests } from '../components/PendingRequests';
 
 import { API_URL as API } from '../config';
 
@@ -86,6 +87,8 @@ export default function Dashboard() {
                         </div>
                     )}
                 </div>
+
+                <PendingRequests />
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" data-testid="stats-grid">

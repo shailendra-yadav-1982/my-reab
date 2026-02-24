@@ -8,7 +8,8 @@ import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { DisabilityBadge } from '../components/DisabilityBadge';
 import { Link } from 'react-router-dom';
-import { Search, MapPin, Users, MessageSquare, Filter } from 'lucide-react';
+import { Search, MapPin, Users, MessageSquare, Filter, UserPlus } from 'lucide-react';
+import { ConnectButton } from '../components/ConnectButton';
 
 import { API_URL as API } from '../config';
 
@@ -159,12 +160,15 @@ export default function Community() {
                                         <p className="text-xs text-zinc-400 line-clamp-2 mb-4">{member.bio}</p>
                                     )}
 
-                                    <Link to={`/messages`}>
-                                        <Button variant="outline" size="sm" className="w-full btn-secondary py-2" data-testid={`message-btn-${member.id}`}>
-                                            <MessageSquare className="w-4 h-4 mr-2" />
-                                            Message
-                                        </Button>
-                                    </Link>
+                                    <div className="flex flex-col gap-2 mt-auto">
+                                        <ConnectButton userId={member.id} className="w-full" />
+                                        <Link to={`/messages`} className="w-full">
+                                            <Button variant="outline" size="sm" className="w-full btn-secondary py-2" data-testid={`message-btn-${member.id}`}>
+                                                <MessageSquare className="w-4 h-4 mr-2" />
+                                                Message
+                                            </Button>
+                                        </Link>
+                                    </div>
                                 </CardContent>
                             </Card>
                         ))
