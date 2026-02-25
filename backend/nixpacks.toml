@@ -2,7 +2,7 @@
 nixPkgs = ["python313"]
 
 [phases.install]
-cmds = ["python -m pip install --no-cache-dir -r requirements.txt"]
+cmds = ["python -m pip install --no-cache-dir -r requirements.txt", "python -m pip show resend"]
 
 [start]
 cmd = "uvicorn server:app --host 0.0.0.0 --port $PORT"
