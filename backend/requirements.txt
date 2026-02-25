@@ -27,3 +27,4 @@ typer>=0.9.0
 authlib
 httpx
 itsdangerous
+resend>=2.23.0
