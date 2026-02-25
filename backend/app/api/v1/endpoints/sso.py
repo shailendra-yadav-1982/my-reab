@@ -48,7 +48,10 @@ async def sso_callback(request: Request):
                 "user_type": "individual",
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "is_verified": True,
-                "auth_provider": "oidc"
+                "auth_provider": "oidc",
+                "bio": "",
+                "location": "",
+                "disability_categories": []
             }
             await db.users.insert_one(user)
             user_id = user["id"]
