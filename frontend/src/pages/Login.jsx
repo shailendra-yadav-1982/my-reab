@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -34,6 +35,10 @@ export default function Login() {
 
     return (
         <div className="min-h-screen bg-[#121212] flex items-center justify-center px-4">
+            <SEO
+                title="Login"
+                description="Sign in to your Disability Pride Connect account to connect with the community."
+            />
             <Toaster position="top-center" richColors />
 
             <div className="w-full max-w-md">
@@ -92,6 +97,15 @@ export default function Login() {
                                     >
                                         {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                     </button>
+                                </div>
+                                <div className="flex justify-end">
+                                    <Link
+                                        to="/forgot-password"
+                                        className="text-xs text-zinc-500 hover:text-white transition-colors"
+                                        data-testid="forgot-password-link"
+                                    >
+                                        Forgot Password?
+                                    </Link>
                                 </div>
                             </div>
                             <Button

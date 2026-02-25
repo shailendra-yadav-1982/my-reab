@@ -1,6 +1,7 @@
 import "@/App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { HelmetProvider } from "react-helmet-async";
 
 // Pages
 import Landing from "./pages/Landing";
@@ -16,6 +17,8 @@ import Messages from "./pages/Messages";
 import Community from "./pages/Community";
 import SSOCallback from "./pages/SSOCallback";
 import Profile from "./pages/Profile";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -62,6 +65,8 @@ function AppRoutes() {
             <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+            <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+            <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
             <Route path="/sso-callback" element={<PublicRoute><SSOCallback /></PublicRoute>} />
 
             {/* Protected Routes */}
@@ -85,11 +90,13 @@ function AppRoutes() {
 function App() {
     return (
         <div className="App">
-            <BrowserRouter>
-                <AuthProvider>
-                    <AppRoutes />
-                </AuthProvider>
-            </BrowserRouter>
+            <HelmetProvider>
+                <BrowserRouter>
+                    <AuthProvider>
+                        <AppRoutes />
+                    </AuthProvider>
+                </BrowserRouter>
+            </HelmetProvider>
         </div>
     );
 }

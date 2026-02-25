@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Layout } from '../components/Layout';
+import SEO from '../components/SEO';
 import {
     Users,
     MessageSquare,
@@ -71,11 +72,16 @@ const prideColors = [
 export default function Landing() {
     return (
         <Layout>
+            <SEO
+                title="Home"
+                description="A global platform connecting people with disabilities, service providers, and NGOs. Building community, breaking barriers, and celebrating disability pride together."
+                keywords="disability pride, inclusive community, advocacy, accessibility, service providers, NGOs"
+            />
             {/* Hero Section */}
             <section className="relative overflow-hidden" data-testid="hero-section">
                 {/* Diagonal Pride Stripes Background */}
                 <div className="absolute inset-0 pride-gradient-bg opacity-50"></div>
-                
+
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
                     <div className="max-w-3xl">
                         <div className="flex gap-2 mb-6 animate-fade-up">
@@ -88,19 +94,19 @@ export default function Landing() {
                                 ></span>
                             ))}
                         </div>
-                        
+
                         <h1 className="font-lexend text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up" style={{ animationDelay: '0.1s' }}>
                             Connect. Support.
                             <span className="block mt-2 bg-gradient-to-r from-pride-red via-pride-gold to-pride-green bg-clip-text text-transparent">
                                 Celebrate Pride.
                             </span>
                         </h1>
-                        
+
                         <p className="text-lg md:text-xl text-zinc-300 mb-8 leading-relaxed animate-fade-up" style={{ animationDelay: '0.2s' }}>
-                            A global platform connecting people with disabilities, service providers, and NGOs. 
+                            A global platform connecting people with disabilities, service providers, and NGOs.
                             Building community, breaking barriers, and celebrating disability pride together.
                         </p>
-                        
+
                         <div className="flex flex-col sm:flex-row gap-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>
                             <Link to="/register">
                                 <Button className="btn-primary text-base px-8 py-4 h-auto" data-testid="hero-join-btn">
@@ -116,7 +122,7 @@ export default function Landing() {
                         </div>
                     </div>
                 </div>
-                
+
                 {/* Diagonal Cut */}
                 <div className="absolute bottom-0 left-0 right-0 h-24 bg-[#121212] diagonal-cut-reverse"></div>
             </section>
@@ -146,7 +152,7 @@ export default function Landing() {
                             Our platform is designed with accessibility at its core, ensuring everyone can participate fully.
                         </p>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {features.map((feature, index) => {
                             const Icon = feature.icon;
@@ -158,7 +164,7 @@ export default function Landing() {
                                 'pride-green': '#34D399'
                             };
                             const accentColor = colorMap[feature.color] || '#FFFFFF';
-                            
+
                             return (
                                 <Card
                                     key={feature.title}
@@ -191,11 +197,11 @@ export default function Landing() {
                             The Disability Pride Flag
                         </h2>
                         <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-                            Each color represents a different aspect of the disability community, 
+                            Each color represents a different aspect of the disability community,
                             designed by Ann Magill to symbolize solidarity and pride.
                         </p>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         {prideColors.map((item, index) => (
                             <div
@@ -215,7 +221,7 @@ export default function Landing() {
                             </div>
                         ))}
                     </div>
-                    
+
                     <div className="mt-12 p-8 rounded-2xl border border-[#27272A] bg-[#18181B]">
                         <div className="flex items-start gap-4">
                             <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
@@ -224,8 +230,8 @@ export default function Landing() {
                             <div>
                                 <h3 className="font-lexend font-semibold text-xl mb-2">The Charcoal Background</h3>
                                 <p className="text-zinc-400 leading-relaxed">
-                                    The charcoal or black background of the flag represents mourning for those who have been 
-                                    lost to ableism, violence, and abuse. The diagonal band represents "cutting across" 
+                                    The charcoal or black background of the flag represents mourning for those who have been
+                                    lost to ableism, violence, and abuse. The diagonal band represents "cutting across"
                                     the barriers that separate disabled people from mainstream society.
                                 </p>
                             </div>
@@ -242,7 +248,7 @@ export default function Landing() {
                         Ready to Join Our Community?
                     </h2>
                     <p className="text-zinc-300 text-lg max-w-2xl mx-auto mb-8">
-                        Whether you're looking for support, want to share your experiences, or represent an organization, 
+                        Whether you're looking for support, want to share your experiences, or represent an organization,
                         there's a place for you here.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">

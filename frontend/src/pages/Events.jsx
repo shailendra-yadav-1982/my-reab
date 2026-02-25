@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
+import SEO from '../components/SEO';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -147,6 +148,11 @@ export default function Events() {
 
     return (
         <Layout>
+            <SEO
+                title="Events"
+                description="Discover and join virtual or in-person community events, advocacy workshops, and inclusive meetups."
+                keywords="disability events, advocacy workshops, inclusive meetups, community gathering"
+            />
             <Toaster position="top-center" richColors />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
@@ -275,8 +281,8 @@ export default function Events() {
                                                 type="button"
                                                 onClick={() => handleFeatureToggle(feature)}
                                                 className={`px-3 py-2 rounded-lg text-sm text-left transition-colors ${newEvent.accessibility_features.includes(feature)
-                                                        ? 'bg-pride-green/20 text-pride-green border border-pride-green/30'
-                                                        : 'bg-[#27272A] text-zinc-300 border border-transparent hover:border-white/20'
+                                                    ? 'bg-pride-green/20 text-pride-green border border-pride-green/30'
+                                                    : 'bg-[#27272A] text-zinc-300 border border-transparent hover:border-white/20'
                                                     }`}
                                                 data-testid={`accessibility-${feature.toLowerCase().replace(/ /g, '-')}`}
                                             >
