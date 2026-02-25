@@ -69,8 +69,8 @@ async def sso_callback(request: Request):
         app_token = create_token(user_id)
         
         # Redirect back to frontend with token
-        frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
-        return RedirectResponse(url=f"{frontend_url}/auth/callback?token={app_token}")
+        frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000').rstrip('/')
+        return RedirectResponse(url=f"{frontend_url}/sso-callback?token={app_token}")
         
     except Exception as e:
         from app.core.config import logger
