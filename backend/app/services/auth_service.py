@@ -38,12 +38,35 @@ async def register_user(user_data: UserCreate):
     return {"token": token, "user": user_response}
 
 async def login_user(credentials: UserLogin):
+    from app.core.config import logger
+    logger.info(f"Login attempt started for: {credentials.email}")
+    
     user = await db.users.find_one({"email": credentials.email})
-    if not user or not verify_password(credentials.password, user["password"]):
+    
+    if not user:
+        logger.warning(f"Login failed: User {credentials.email} not found")
         raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    # Handle SSO users who don't have a password stored
+    if "password" not in user or not user["password"]:
+        provider = user.get("auth_provider", "an external provider")
+        logger.warning(f"Login failed: User {credentials.email} is an SSO user ({provider})")
+        raise HTTPException(
+            status_code=401, 
+            detail=f"This account is linked to {provider}. Please use the SSO login option."
+        )
+    
+    try:
+        if not verify_password(credentials.password, user["password"]):
+            logger.warning(f"Login failed: Incorrect password for {credentials.email}")
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+    except Exception as e:
+        logger.error(f"Critical error during password verification for {credentials.email}: {str(e)}")
+        raise HTTPException(status_code=500, detail="Authentication service encountered an error")
     
     token = create_token(user["id"])
     user_response = {k: v for k, v in user.items() if k not in ["password", "_id"]}
+    logger.info(f"Login successful for: {credentials.email}")
     return {"token": token, "user": user_response}
 
 async def request_password_reset(email: str):
