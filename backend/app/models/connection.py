@@ -14,7 +14,9 @@ class Connection(BaseModel):
 class ConnectionResponse(BaseModel):
     id: str
     sender_id: str
+    sender_name: Optional[str] = None
     receiver_id: str
+    receiver_name: Optional[str] = None
     status: str
     created_at: datetime
     updated_at: datetime
