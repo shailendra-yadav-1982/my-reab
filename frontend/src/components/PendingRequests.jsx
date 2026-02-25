@@ -56,7 +56,7 @@ export function PendingRequests() {
                                     <Users className="w-5 h-5 text-pride-blue" />
                                 </div>
                                 <div className="text-sm">
-                                    <div className="font-medium">User {request.sender_id.substring(0, 8)}...</div>
+                                    <div className="font-medium">{request.sender_name || `User ${request.sender_id.substring(0, 8)}`}</div>
                                     <div className="text-zinc-500 text-xs">wants to connect</div>
                                 </div>
                             </div>
