@@ -27,6 +27,7 @@ async def sso_callback(request: Request):
         
     try:
         from app.core.security import create_token
+        from app.core.database import db
         from app.core.config import logger
         logger.info("SSO callback received. Attempting to authorize access token.")
         
