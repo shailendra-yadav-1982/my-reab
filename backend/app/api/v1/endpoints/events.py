@@ -6,11 +6,11 @@ from app.services import event_service
 
 router = APIRouter()
 
-@router.post("/", response_model=EventResponse)
+@router.post("", response_model=EventResponse)
 async def create_event(event_data: EventCreate, current_user: dict = Depends(get_current_user)):
     return await event_service.create_event(event_data, current_user)
 
-@router.get("/", response_model=List[EventResponse])
+@router.get("", response_model=List[EventResponse])
 async def get_events(
     event_type: Optional[str] = None,
     is_virtual: Optional[bool] = None,

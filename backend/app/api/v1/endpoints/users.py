@@ -5,7 +5,7 @@ from app.services import user_service
 
 router = APIRouter()
 
-@router.get("/", response_model=List[UserResponse])
+@router.get("", response_model=List[UserResponse])
 async def get_users(
     user_type: Optional[str] = None,
     disability_category: Optional[str] = None,

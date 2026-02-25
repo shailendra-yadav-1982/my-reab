@@ -6,11 +6,11 @@ from app.services import forum_service
 
 router = APIRouter()
 
-@router.post("/", response_model=ForumPostResponse)
+@router.post("", response_model=ForumPostResponse)
 async def create_forum_post(post_data: ForumPostCreate, current_user: dict = Depends(get_current_user)):
     return await forum_service.create_post(post_data, current_user)
 
-@router.get("/", response_model=List[ForumPostResponse])
+@router.get("", response_model=List[ForumPostResponse])
 async def get_forum_posts(
     category: Optional[str] = None,
     tag: Optional[str] = None,
