@@ -47,6 +47,7 @@ The platform includes forums, a service-provider directory, event management, pr
 | 🏘️ **Community** | Community overview dashboard |
 | 📊 **Dashboard** | Personalized activity feed, stats, and connection requests management |
 | 🤝 **Connections** | Send and manage connection requests with community members |
+| 🔑 **Password Reset** | Recover account via email reset link (Resend integration) |
 
 ---
 
@@ -146,6 +147,8 @@ my-reab/
    DB_NAME=disability_pride_connect
    JWT_SECRET=your-secret-key-here
    CORS_ORIGINS=http://localhost:3000
+   RESEND_API_KEY=re_your_api_key
+   MAIL_FROM=onboarding@resend.dev
    ```
 
 5. **Start the server:**
@@ -193,6 +196,8 @@ my-reab/
 | `DB_NAME` | ✅ | Database name |
 | `JWT_SECRET` | ✅ | Secret key for signing JWT tokens |
 | `CORS_ORIGINS` | ❌ | Comma-separated allowed origins (default: `*`) |
+| `RESEND_API_KEY` | ✅ | API Key from Resend for email delivery |
+| `MAIL_FROM` | ✅ | Sender email address for system emails |
 
 ---
 
@@ -207,6 +212,8 @@ All API routes are prefixed with `/api`.
 | `POST` | `/api/auth/login` | ❌ | Login and receive JWT token |
 | `GET` | `/api/auth/me` | ✅ | Get current user profile |
 | `PUT` | `/api/auth/me` | ✅ | Update current user profile |
+| `POST` | `/api/auth/forgot-password` | ❌ | Request a password reset link |
+| `POST` | `/api/auth/reset-password` | ❌ | Reset password using a valid token |
 
 ### Users
 | Method | Endpoint | Auth | Description |
