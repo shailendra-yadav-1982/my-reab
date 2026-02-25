@@ -38,3 +38,10 @@ class UserUpdate(BaseModel):
     disability_categories: Optional[List[str]] = None
     organization_name: Optional[str] = None
     avatar_url: Optional[str] = None
+
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+class PasswordResetConfirm(BaseModel):
+    token: str
+    new_password: str

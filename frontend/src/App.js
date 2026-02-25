@@ -17,6 +17,8 @@ import Messages from "./pages/Messages";
 import Community from "./pages/Community";
 import SSOCallback from "./pages/SSOCallback";
 import Profile from "./pages/Profile";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -63,6 +65,8 @@ function AppRoutes() {
             <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+            <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+            <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
             <Route path="/sso-callback" element={<PublicRoute><SSOCallback /></PublicRoute>} />
 
             {/* Protected Routes */}

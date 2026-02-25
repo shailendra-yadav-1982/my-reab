@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Request
 from app.core.security import get_current_user
 from app.core.config import oauth, OIDC_ISSUER_URL
-from app.models.user import UserCreate, UserLogin, UserResponse, UserUpdate
+from app.models.user import UserCreate, UserLogin, UserResponse, UserUpdate, PasswordResetRequest, PasswordResetConfirm
 from app.services import auth_service, user_service
 
 router = APIRouter()
@@ -21,3 +21,11 @@ async def get_me(current_user: dict = Depends(get_current_user)):
 @router.put("/me", response_model=UserResponse)
 async def update_me(update_data: UserUpdate, current_user: dict = Depends(get_current_user)):
     return await user_service.update_user(current_user["id"], update_data)
+
+@router.post("/forgot-password", response_model=dict)
+async def forgot_password(request: PasswordResetRequest):
+    return await auth_service.request_password_reset(request.email)
+
+@router.post("/reset-password", response_model=dict)
+async def reset_password(confirm: PasswordResetConfirm):
+    return await auth_service.confirm_password_reset(confirm.token, confirm.new_password)

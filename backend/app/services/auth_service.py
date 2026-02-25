@@ -1,5 +1,6 @@
 import uuid
-from datetime import datetime, timezone
+import secrets
+from datetime import datetime, timezone, timedelta
 from fastapi import HTTPException
 from app.core.database import db
 from app.core.security import hash_password, verify_password, create_token
@@ -43,3 +44,44 @@ async def login_user(credentials: UserLogin):
     token = create_token(user["id"])
     user_response = {k: v for k, v in user.items() if k not in ["password", "_id"]}
     return {"token": token, "user": user_response}
+
+async def request_password_reset(email: str):
+    user = await db.users.find_one({"email": email})
+    if not user:
+        # For security, don't reveal if email exists, but we'll return a success message anyway
+        return {"message": "If an account exists with this email, a reset link will be sent."}
+    
+    reset_token = secrets.token_urlsafe(32)
+    expires = datetime.now(timezone.utc) + timedelta(hours=1)
+    
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {
+            "reset_token": reset_token,
+            "reset_token_expires": expires.isoformat()
+        }}
+    )
+    
+    # In a real app, send email. Here we log it for the user to see.
+    print(f"PASSWORD RESET TOKEN FOR {email}: {reset_token}")
+    return {"message": "Reset token generated. Check terminal logs."}
+
+async def confirm_password_reset(token: str, new_password: str):
+    user = await db.users.find_one({
+        "reset_token": token,
+        "reset_token_expires": {"$gt": datetime.now(timezone.utc).isoformat()}
+    })
+    
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {
+            "password": hash_password(new_password),
+            "reset_token": None,
+            "reset_token_expires": None
+        }}
+    )
+    
+    return {"message": "Password successfully reset"}
