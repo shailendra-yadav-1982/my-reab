@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from app.core.database import db
 from app.core.security import hash_password, verify_password, create_token
 from app.models.user import UserCreate, UserLogin
+from .email_service import send_reset_password_email
 
 async def register_user(user_data: UserCreate):
     # Check if email exists
@@ -62,9 +63,10 @@ async def request_password_reset(email: str):
         }}
     )
     
-    # In a real app, send email. Here we log it for the user to see.
-    print(f"PASSWORD RESET TOKEN FOR {email}: {reset_token}")
-    return {"message": "Reset token generated. Check terminal logs."}
+    # Send real email via Resend
+    await send_reset_password_email(email, reset_token)
+    
+    return {"message": "If an account exists, a reset link has been sent to your email."}
 
 async def confirm_password_reset(token: str, new_password: str):
     user = await db.users.find_one({
