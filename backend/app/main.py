@@ -9,6 +9,9 @@ from .core.config import logger
 
 app = FastAPI(title="Disability Pride Connect API")
 
+# Setup Proxy Headers for Railway/HTTPS (Must be first to correctly identify protocol)
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
+
 # Setup CORS
 app.add_middleware(
     CORSMiddleware,
@@ -19,13 +22,16 @@ app.add_middleware(
 )
 
 # Setup Session middleware for Authlib/SSO
-# Note: In production, use a secure secret key and consider RAILS_ENV/ENVIRONMENT
+# Note: https_only=True is required for cookies to work on HTTPS (Railway)
+ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')
+IS_PROD = ENVIRONMENT == 'production' or os.environ.get('RAILWAY_STATIC_URL')
+
 app.add_middleware(
     SessionMiddleware, 
-    secret_key=os.environ.get('JWT_SECRET', 'temp-secret-key-for-sessions')
+    secret_key=os.environ.get('JWT_SECRET', 'temp-secret-key-for-sessions'),
+    https_only=IS_PROD,
+    same_site="lax"
 )
-# Setup Proxy Headers for Railway/HTTPS
-app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 
 # Include API Router
 app.include_router(api_router, prefix="/api")

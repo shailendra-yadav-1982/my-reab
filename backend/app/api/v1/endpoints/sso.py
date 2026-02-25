@@ -11,10 +11,13 @@ async def sso_login(request: Request):
         raise HTTPException(status_code=400, detail="SSO not configured")
     
     redirect_uri = str(request.url_for('sso_callback'))
+    from app.core.config import logger
+    
     # If running behind a proxy or on Railway, ensure https
     if os.environ.get('RAILWAY_STATIC_URL') or os.environ.get('ENVIRONMENT') == 'production':
         redirect_uri = redirect_uri.replace('http://', 'https://')
         
+    logger.info(f"Initiating SSO login. Redirect URI: {redirect_uri}")
     return await oauth.oidc.authorize_redirect(request, redirect_uri)
 
 @router.get("/callback")
@@ -24,13 +27,16 @@ async def sso_callback(request: Request):
         
     try:
         from app.core.security import create_token
-        from app.core.database import db
+        from app.core.config import logger
+        logger.info("SSO callback received. Attempting to authorize access token.")
         
         token = await oauth.oidc.authorize_access_token(request)
         user_info = token.get('userinfo')
         if not user_info:
+            logger.error("SSO Callback: Failed to get user info from token")
             raise HTTPException(status_code=400, detail="Failed to get user info from OIDC provider")
-            
+        
+        logger.info(f"SSO login successful for user: {user_info.get('email')}")
         email = user_info.get('email')
         if not email:
             raise HTTPException(status_code=400, detail="OIDC provider did not return an email")
