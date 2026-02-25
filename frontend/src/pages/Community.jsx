@@ -49,18 +49,24 @@ export default function Community() {
             if (selectedCategory && selectedCategory !== 'all') params.append('disability_category', selectedCategory);
 
             const response = await axios.get(`${API}/users?${params.toString()}`);
+            console.log('Fetched members:', response.data);
             setMembers(response.data);
         } catch (error) {
             console.error('Failed to fetch members:', error);
+            if (error.response) {
+                console.error('Data:', error.response.data);
+                console.error('Status:', error.response.status);
+            }
         } finally {
             setLoading(false);
         }
     };
 
-    const filteredMembers = members.filter(member =>
-        member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        member.location?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredMembers = members.filter(member => {
+        const nameMatch = member.name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false;
+        const locationMatch = member.location?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false;
+        return nameMatch || locationMatch;
+    });
 
     const getUserTypeLabel = (type) => {
         const found = userTypes.find(t => t.value === type);

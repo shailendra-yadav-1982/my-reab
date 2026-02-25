@@ -22,14 +22,15 @@ class UserResponse(BaseModel):
     id: str
     email: str
     name: str
-    user_type: str
+    user_type: str = "individual"
     organization_name: Optional[str] = None
     disability_categories: List[str] = []
     bio: Optional[str] = None
     location: Optional[str] = None
     avatar_url: Optional[str] = None
-    created_at: str
+    created_at: Optional[str] = None
     is_verified: bool = False
+    auth_provider: Optional[str] = None
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None

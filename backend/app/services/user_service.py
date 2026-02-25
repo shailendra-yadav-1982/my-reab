@@ -8,6 +8,7 @@ async def get_users(
     location: Optional[str] = None,
     limit: int = 50
 ):
+    from app.core.config import logger
     query = {}
     if user_type:
         query["user_type"] = user_type
@@ -16,7 +17,22 @@ async def get_users(
     if location:
         query["location"] = {"$regex": location, "$options": "i"}
     
-    users = await db.users.find(query, {"_id": 0, "password": 0}).limit(limit).to_list(limit)
+    logger.info(f"Fetching users with query: {query}")
+    
+    cursor = db.users.find(query, {"_id": 0, "password": 0}).limit(limit)
+    users = []
+    async for user_doc in cursor:
+        try:
+            # Validate against model to catch issues early
+            from app.models.user import UserResponse
+            UserResponse(**user_doc)
+            users.append(user_doc)
+        except Exception as e:
+            logger.error(f"Validation error for user {user_doc.get('email', 'unknown')}: {str(e)}")
+            # Still include but log error
+            users.append(user_doc)
+            
+    logger.info(f"Found {len(users)} users")
     return users
 
 async def get_user_by_id(user_id: str):

@@ -1,15 +1,19 @@
 import os
-import resend
 from app.core.config import logger
-
-# Set API Key from environment variable
-resend.api_key = os.environ.get("RESEND_API_KEY")
 MAIL_FROM = os.environ.get("MAIL_FROM", "onboarding@resend.dev")
 
 async def send_reset_password_email(email: str, token: str):
     """
     Sends a password reset email using Resend API.
     """
+    try:
+        import resend
+        resend.api_key = os.environ.get("RESEND_API_KEY")
+    except ImportError:
+        logger.warning(f"Resend module not found. Falling back to mock for {email}")
+        resend = None
+
+    # The frontend URL for password reset (adjust if necessary)
     # The frontend URL for password reset (adjust if necessary)
     reset_link = f"http://localhost:3000/reset-password?token={token}"
     
@@ -35,8 +39,8 @@ async def send_reset_password_email(email: str, token: str):
     """
 
     try:
-        if not resend.api_key or "your_api_key_here" in resend.api_key:
-            logger.warning(f"RESEND_API_KEY not set. Logging email token for {email}: {token}")
+        if not resend or not os.environ.get("RESEND_API_KEY") or "your_api_key_here" in os.environ.get("RESEND_API_KEY"):
+            logger.warning(f"RESEND_API_KEY not set or resend module missing. Logging email token for {email}: {token}")
             print(f"\n[MOCK EMAIL] To: {email}\n[MOCK EMAIL] Link: {reset_link}\n")
             return
             
