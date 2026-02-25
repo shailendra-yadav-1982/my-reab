@@ -39,7 +39,7 @@ async def respond_to_request(
 async def get_pending(current_user: dict = Depends(get_current_user)):
     return await connection_service.get_pending_requests(current_user["id"])
 
-@router.get("/", response_model=List[ConnectionResponse])
+@router.get("", response_model=List[ConnectionResponse])
 async def get_accepted_connections(current_user: dict = Depends(get_current_user)):
     return await connection_service.get_connections(current_user["id"])
 

@@ -6,7 +6,7 @@ from app.services import message_service
 
 router = APIRouter()
 
-@router.post("/", response_model=MessageResponse)
+@router.post("", response_model=MessageResponse)
 async def send_message(message_data: MessageCreate, current_user: dict = Depends(get_current_user)):
     return await message_service.send_message(message_data, current_user)
 

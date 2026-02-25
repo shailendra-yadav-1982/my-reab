@@ -6,11 +6,11 @@ from app.services import resource_service
 
 router = APIRouter()
 
-@router.post("/", response_model=ResourceResponse)
+@router.post("", response_model=ResourceResponse)
 async def create_resource(resource_data: ResourceCreate, current_user: dict = Depends(get_current_user)):
     return await resource_service.create_resource(resource_data, current_user)
 
-@router.get("/", response_model=List[ResourceResponse])
+@router.get("", response_model=List[ResourceResponse])
 async def get_resources(
     category: Optional[str] = None,
     tag: Optional[str] = None,

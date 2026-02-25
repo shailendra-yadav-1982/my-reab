@@ -6,11 +6,11 @@ from app.services import provider_service
 
 router = APIRouter()
 
-@router.post("/", response_model=ServiceProviderResponse)
+@router.post("", response_model=ServiceProviderResponse)
 async def create_service_provider(provider_data: ServiceProviderCreate, current_user: dict = Depends(get_current_user)):
     return await provider_service.create_provider(provider_data, current_user)
 
-@router.get("/", response_model=List[ServiceProviderResponse])
+@router.get("", response_model=List[ServiceProviderResponse])
 async def get_providers(
     service: Optional[str] = None,
     disability_focus: Optional[str] = None,

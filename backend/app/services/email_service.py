@@ -13,9 +13,9 @@ async def send_reset_password_email(email: str, token: str):
         logger.warning(f"Resend module not found. Falling back to mock for {email}")
         resend = None
 
-    # The frontend URL for password reset (adjust if necessary)
-    # The frontend URL for password reset (adjust if necessary)
-    reset_link = f"http://localhost:3000/reset-password?token={token}"
+    # The frontend URL for password reset
+    frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000').rstrip('/')
+    reset_link = f"{frontend_url}/reset-password?token={token}"
     
     html_content = f"""
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; background-color: #ffffff;">
