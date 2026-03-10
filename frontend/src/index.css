@@ -5,6 +5,13 @@
 @tailwind utilities;
 
 @layer base {
+    html {
+        background-color: #121212;
+        margin: 0;
+        padding: 0;
+        border: none !important;
+    }
+
     :root {
         --background: 0 0% 7%;
         --foreground: 0 0% 100%;
@@ -26,12 +33,13 @@
         --input: 240 4% 16%;
         --ring: 0 0% 100%;
         --radius: 0.75rem;
-        
-        --pride-red: #FF5C5C;
-        --pride-gold: #FFD700;
-        --pride-white: #F4F4F5;
-        --pride-blue: #38BDF8;
-        --pride-green: #34D399;
+
+        --pride-red: #E40303;
+        --pride-orange: #FF8C00;
+        --pride-yellow: #FFD700;
+        --pride-green: #008026;
+        --pride-blue: #24408E;
+        --pride-purple: #732982;
         --pride-charcoal: #121212;
         --pride-paper: #18181B;
     }
@@ -41,34 +49,46 @@
     * {
         @apply border-border;
     }
-    
+
     html {
         scroll-behavior: smooth;
     }
-    
+
     body {
         @apply bg-[#121212] text-white font-atkinson antialiased;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        background-blend-mode: overlay;
+        margin: 0;
+        padding: 0;
+        border: none !important;
         background-color: #121212;
     }
-    
-    h1, h2, h3, h4, h5, h6 {
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         @apply font-lexend font-semibold tracking-tight;
     }
-    
-    p, span, li, a {
+
+    p,
+    span,
+    li,
+    a {
         @apply leading-relaxed;
     }
-    
+
     /* High contrast focus states */
     *:focus-visible {
         @apply outline-none ring-2 ring-white ring-offset-2 ring-offset-[#121212];
     }
-    
+
     /* Reduced motion */
     @media (prefers-reduced-motion: reduce) {
-        *, ::before, ::after {
+
+        *,
+        ::before,
+        ::after {
             animation-duration: 0.01ms !important;
             animation-iteration-count: 1 !important;
             transition-duration: 0.01ms !important;
@@ -78,56 +98,49 @@
 
 @layer components {
     .pride-gradient-bg {
-        background: linear-gradient(
-            135deg,
-            transparent 0%,
-            transparent 35%,
-            rgba(255, 92, 92, 0.1) 36%,
-            rgba(255, 92, 92, 0.1) 40%,
-            rgba(255, 215, 0, 0.1) 41%,
-            rgba(255, 215, 0, 0.1) 45%,
-            rgba(244, 244, 245, 0.05) 46%,
-            rgba(244, 244, 245, 0.05) 50%,
-            rgba(56, 189, 248, 0.1) 51%,
-            rgba(56, 189, 248, 0.1) 55%,
-            rgba(52, 211, 153, 0.1) 56%,
-            rgba(52, 211, 153, 0.1) 60%,
-            transparent 61%
-        );
+        background: linear-gradient(135deg,
+                transparent 0%,
+                transparent 35%,
+                rgba(228, 3, 3, 0.1) 36%,
+                rgba(228, 3, 3, 0.1) 40%,
+                rgba(255, 140, 0, 0.1) 41%,
+                rgba(255, 140, 0, 0.1) 45%,
+                rgba(255, 215, 0, 0.1) 46%,
+                rgba(255, 215, 0, 0.1) 50%,
+                rgba(0, 128, 38, 0.1) 51%,
+                rgba(0, 128, 38, 0.1) 55%,
+                rgba(36, 64, 142, 0.1) 56%,
+                rgba(36, 64, 142, 0.1) 60%,
+                rgba(115, 41, 130, 0.1) 61%,
+                rgba(115, 41, 130, 0.1) 65%,
+                transparent 66%);
     }
-    
+
     .diagonal-cut {
         clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
     }
-    
+
     .diagonal-cut-reverse {
         clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
     }
-    
+
     .pride-border-left {
-        border-left: 4px solid;
-        border-image: linear-gradient(
-            to bottom,
-            var(--pride-red),
-            var(--pride-gold),
-            var(--pride-white),
-            var(--pride-blue),
-            var(--pride-green)
-        ) 1;
+        /* Utility removed to fix white stripe issue as per user request. Use MyEnAb branded borders instead. */
     }
-    
+
     .card-hover {
         @apply transition-all duration-300 hover:border-white/30 hover:-translate-y-1;
     }
-    
+
     .btn-primary {
-        @apply bg-white text-black font-bold px-8 py-3 rounded-full shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-transform active:scale-95 hover:bg-zinc-200;
+        @apply bg-white text-black font-bold px-8 py-3 rounded-full transition-transform active:scale-95 hover:bg-zinc-200;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
     }
-    
+
     .btn-secondary {
         @apply bg-transparent border-2 border-white/20 text-white hover:border-white hover:bg-white/5 px-8 py-3 rounded-full transition-colors;
     }
-    
+
     .input-dark {
         @apply bg-[#27272A] border-transparent focus:border-white focus:ring-2 focus:ring-white/20 text-white rounded-lg p-4 placeholder:text-zinc-500;
     }

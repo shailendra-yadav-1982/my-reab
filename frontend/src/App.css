@@ -1,17 +1,19 @@
-/* Disability Pride Connect - Main Styles */
+/* MyEnAb - Main Styles */
 
-/* Pride Accent Colors */
-.pride-red { color: #FF5C5C; }
-.pride-gold { color: #FFD700; }
-.pride-white { color: #F4F4F5; }
-.pride-blue { color: #38BDF8; }
-.pride-green { color: #34D399; }
+.pride-red { color: #E40303; }
+.pride-gold { color: #FF8C00; }
+.pride-yellow { color: #FFD700; }
+.pride-green { color: #008026; }
+.pride-blue { color: #24408E; }
+.pride-purple { color: #732982; }
 
-.bg-pride-red { background-color: #FF5C5C; }
-.bg-pride-gold { background-color: #FFD700; }
-.bg-pride-white { background-color: #F4F4F5; }
-.bg-pride-blue { background-color: #38BDF8; }
-.bg-pride-green { background-color: #34D399; }
+.bg-pride-red { background-color: #E40303; }
+.bg-pride-gold { background-color: #FF8C00; }
+.bg-pride-yellow { background-color: #FFD700; }
+.bg-pride-green { background-color: #008026; }
+.bg-pride-blue { background-color: #24408E; }
+.bg-pride-purple { background-color: #732982; }
+
 
 .border-pride-red { border-color: #FF5C5C; }
 .border-pride-gold { border-color: #FFD700; }
@@ -35,18 +37,20 @@
     background: linear-gradient(
         135deg,
         transparent 0%,
-        transparent 35%,
-        rgba(255, 92, 92, 0.15) 36%,
-        rgba(255, 92, 92, 0.15) 40%,
-        rgba(255, 215, 0, 0.15) 41%,
-        rgba(255, 215, 0, 0.15) 45%,
-        rgba(244, 244, 245, 0.08) 46%,
-        rgba(244, 244, 245, 0.08) 50%,
-        rgba(56, 189, 248, 0.15) 51%,
-        rgba(56, 189, 248, 0.15) 55%,
-        rgba(52, 211, 153, 0.15) 56%,
-        rgba(52, 211, 153, 0.15) 60%,
-        transparent 61%
+        transparent 25%,
+        rgba(228, 3, 3, 0.15) 26%,
+        rgba(228, 3, 3, 0.15) 30%,
+        rgba(255, 140, 0, 0.15) 31%,
+        rgba(255, 140, 0, 0.15) 35%,
+        rgba(255, 215, 0, 0.15) 36%,
+        rgba(255, 215, 0, 0.15) 40%,
+        rgba(0, 128, 38, 0.15) 41%,
+        rgba(0, 128, 38, 0.15) 45%,
+        rgba(36, 64, 142, 0.15) 46%,
+        rgba(36, 64, 142, 0.15) 50%,
+        rgba(115, 41, 130, 0.15) 51%,
+        rgba(115, 41, 130, 0.15) 55%,
+        transparent 56%
     );
     pointer-events: none;
     z-index: 0;

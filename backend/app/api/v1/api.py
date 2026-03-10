@@ -16,4 +16,4 @@ api_router.include_router(connections.router, prefix="/connections", tags=["conn
 
 @api_router.get("/")
 async def root():
-    return {"message": "Disability Pride Connect API v1", "status": "healthy"}
+    return {"message": "MyEnAb API v1", "status": "healthy"}

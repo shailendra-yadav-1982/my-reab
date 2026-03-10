@@ -34,7 +34,7 @@ export default function ForgotPassword() {
         <div className="min-h-screen bg-[#121212] flex items-center justify-center px-4">
             <SEO
                 title="Forgot Password"
-                description="Reset your Disability Pride Connect account password."
+                description="Reset your MyEnAb account password."
             />
             <Toaster position="top-center" richColors />
 

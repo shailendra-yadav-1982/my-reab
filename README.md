@@ -1,4 +1,4 @@
-# Disability Pride Connect
+# MyEnAb
 
 A full-stack community platform designed to connect individuals with disabilities, service providers, NGOs, and caregivers. The platform fosters community, resources sharing, event coordination, and peer support in an accessible, inclusive environment.
 
@@ -24,7 +24,7 @@ A full-stack community platform designed to connect individuals with disabilitie
 
 ## Overview
 
-**Disability Pride Connect** is a community hub where:
+**MyEnAb** is a community hub where:
 - **Individuals** with disabilities can connect, share experiences, and access resources.
 - **Service Providers & NGOs** can list their services and reach those who need them.
 - **Caregivers** can find community support and information.

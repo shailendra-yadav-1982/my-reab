@@ -118,7 +118,7 @@ export default function Messages() {
         <Layout>
             <SEO
                 title="Messages"
-                description="Connect privately with other members of the Disability Pride Connect community."
+                description="Connect privately with other members of the MyEnAb community."
             />
             <Toaster position="top-center" richColors />
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-testid="messages-page">

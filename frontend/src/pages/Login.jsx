@@ -8,6 +8,7 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Toaster, toast } from 'sonner';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { MyEnAbLogo } from '../components/MyEnAbLogo';
 import { API_URL as API } from '../config';
 
 export default function Login() {
@@ -37,7 +38,7 @@ export default function Login() {
         <div className="min-h-screen bg-[#121212] flex items-center justify-center px-4">
             <SEO
                 title="Login"
-                description="Sign in to your Disability Pride Connect account to connect with the community."
+                description="Sign in to your MyEnAb account to connect with the community."
             />
             <Toaster position="top-center" richColors />
 
@@ -49,11 +50,8 @@ export default function Login() {
 
                 <Card className="bg-[#18181B] border-[#27272A]" data-testid="login-card">
                     <CardHeader className="space-y-1">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-lg flex items-center justify-center pride-border-left bg-[#121212]">
-                                <span className="font-lexend font-bold text-lg">DP</span>
-                            </div>
-                            <span className="font-lexend font-semibold">Pride Connect</span>
+                        <div className="flex items-center mb-4">
+                            <MyEnAbLogo className="w-56 h-16" />
                         </div>
                         <CardTitle className="font-lexend text-2xl">Welcome back</CardTitle>
                         <CardDescription className="text-zinc-400">
@@ -147,11 +145,12 @@ export default function Login() {
 
                 {/* Pride colors decoration */}
                 <div className="flex justify-center gap-2 mt-8">
-                    <span className="w-3 h-3 rounded-full bg-pride-red"></span>
-                    <span className="w-3 h-3 rounded-full bg-pride-gold"></span>
-                    <span className="w-3 h-3 rounded-full bg-pride-white"></span>
-                    <span className="w-3 h-3 rounded-full bg-pride-blue"></span>
-                    <span className="w-3 h-3 rounded-full bg-pride-green"></span>
+                    <span className="w-3 h-3 rounded-full bg-[#E40303]"></span>
+                    <span className="w-3 h-3 rounded-full bg-[#FF8C00]"></span>
+                    <span className="w-3 h-3 rounded-full bg-[#FFD700]"></span>
+                    <span className="w-3 h-3 rounded-full bg-[#008026]"></span>
+                    <span className="w-3 h-3 rounded-full bg-[#24408E]"></span>
+                    <span className="w-3 h-3 rounded-full bg-[#732982]"></span>
                 </div>
             </div>
         </div>

@@ -7,7 +7,7 @@ import os
 from .api.v1.api import api_router
 from .core.config import logger
 
-app = FastAPI(title="Disability Pride Connect API")
+app = FastAPI(title="MyEnAb API")
 
 # Setup Proxy Headers for Railway/HTTPS (Must be first to correctly identify protocol)
 app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
@@ -38,7 +38,7 @@ app.include_router(api_router, prefix="/api")
 
 @app.get("/")
 async def root():
-    return {"message": "Disability Pride Connect API is running", "status": "healthy"}
+    return {"message": "MyEnAb API is running", "status": "healthy"}
 
 if __name__ == "__main__":
     import uvicorn

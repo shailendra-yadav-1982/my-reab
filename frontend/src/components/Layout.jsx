@@ -22,7 +22,7 @@ import {
     Settings
 } from 'lucide-react';
 import { useState } from 'react';
-import { PrideLogo } from './PrideLogo';
+import { MyEnAbLogo } from './MyEnAbLogo';
 
 const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: Home },
@@ -52,13 +52,12 @@ export const Layout = ({ children }) => {
             </a>
 
             {/* Navigation */}
-            <nav className="sticky top-0 z-50 border-b border-[#27272A] bg-[#121212]/95 backdrop-blur-sm" role="navigation" aria-label="Main navigation">
+            <nav className="sticky top-0 z-50 border-t-0 border-b border-[#27272A] bg-[#121212]/95 backdrop-blur-sm" role="navigation" aria-label="Main navigation">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
-                        <Link to={user ? '/dashboard' : '/'} className="flex items-center gap-3" data-testid="nav-logo">
-                            <PrideLogo className="w-10 h-10" />
-                            <span className="font-lexend font-semibold text-lg hidden sm:block">Pride Connect</span>
+                        <Link to={user ? '/dashboard' : '/'} className="flex items-center" data-testid="nav-logo">
+                            <MyEnAbLogo className="w-48 h-14" />
                         </Link>
 
                         {/* Desktop Navigation */}
@@ -95,8 +94,8 @@ export const Layout = ({ children }) => {
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                             <button className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#121212] rounded-full" data-testid="user-menu-trigger">
-                                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pride-red to-pride-gold flex items-center justify-center">
-                                                    <span className="text-sm font-bold text-black">{user.name?.charAt(0).toUpperCase()}</span>
+                                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-purple-600 flex items-center justify-center">
+                                                    <span className="text-sm font-bold text-white">{user.name?.charAt(0).toUpperCase()}</span>
                                                 </div>
                                             </button>
                                         </DropdownMenuTrigger>
@@ -192,20 +191,20 @@ export const Layout = ({ children }) => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         <div className="col-span-1 md:col-span-2">
-                            <div className="flex items-center gap-3 mb-4">
-                                <PrideLogo className="w-10 h-10" />
-                                <span className="font-lexend font-semibold text-lg">Pride Connect</span>
+                            <div className="flex items-center mb-4">
+                                <MyEnAbLogo className="w-48 h-14" />
                             </div>
                             <p className="text-zinc-400 text-sm leading-relaxed max-w-md">
                                 A global platform connecting people with disabilities, service providers, and NGOs.
                                 Building community, breaking barriers, celebrating pride.
                             </p>
                             <div className="flex gap-2 mt-4">
-                                <span className="w-3 h-3 rounded-full bg-pride-red"></span>
-                                <span className="w-3 h-3 rounded-full bg-pride-gold"></span>
-                                <span className="w-3 h-3 rounded-full bg-pride-white"></span>
-                                <span className="w-3 h-3 rounded-full bg-pride-blue"></span>
-                                <span className="w-3 h-3 rounded-full bg-pride-green"></span>
+                                <span className="w-3 h-3 rounded-full bg-[#E40303]"></span>
+                                <span className="w-3 h-3 rounded-full bg-[#FF8C00]"></span>
+                                <span className="w-3 h-3 rounded-full bg-[#FFD700]"></span>
+                                <span className="w-3 h-3 rounded-full bg-[#008026]"></span>
+                                <span className="w-3 h-3 rounded-full bg-[#24408E]"></span>
+                                <span className="w-3 h-3 rounded-full bg-[#732982]"></span>
                             </div>
                         </div>
                         <div>
@@ -228,7 +227,7 @@ export const Layout = ({ children }) => {
                         </div>
                     </div>
                     <div className="border-t border-[#27272A] mt-8 pt-8 text-center text-sm text-zinc-500">
-                        <p>&copy; {new Date().getFullYear()} Disability Pride Connect. All rights reserved.</p>
+                        <p>&copy; {new Date().getFullYear()} MyEnAb. All rights reserved.</p>
                     </div>
                 </div>
             </footer>

@@ -21,7 +21,7 @@ async def send_reset_password_email(email: str, token: str):
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; background-color: #ffffff;">
         <h2 style="color: #333333; text-align: center;">Reset Your Password</h2>
         <p style="color: #555555; font-size: 16px; line-height: 1.5;">
-            You requested to reset your password for your <strong>Disability Pride Connect</strong> account. Click the button below to set a new password:
+            You requested to reset your password for your <strong>MyEnAb</strong> account. Click the button below to set a new password:
         </p>
         <div style="text-align: center; margin: 30px 0;">
             <a href="{reset_link}" style="background-color: #000000; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Reset Password</a>
@@ -47,7 +47,7 @@ async def send_reset_password_email(email: str, token: str):
         params = {
             "from": MAIL_FROM,
             "to": [email],
-            "subject": "Reset your password - Disability Pride Connect",
+            "subject": "Reset your password - MyEnAb",
             "html": html_content,
         }
 

@@ -1,4 +1,4 @@
-# Disability Pride Connect - Product Requirements Document
+# MyEnAb - Product Requirements Document
 
 ## Overview
 A global platform for people with disabilities to connect, share experiences, find service providers, and celebrate disability pride.

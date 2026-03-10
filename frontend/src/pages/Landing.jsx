@@ -14,6 +14,7 @@ import {
     Heart,
     Shield
 } from 'lucide-react';
+import { MyEnAbLogo } from '../components/MyEnAbLogo';
 
 const features = [
     {
@@ -62,11 +63,12 @@ const stats = [
 ];
 
 const prideColors = [
-    { name: 'Physical', color: '#FF5C5C', description: 'Physical disabilities' },
-    { name: 'Cognitive', color: '#FFD700', description: 'Neurodivergence & cognitive' },
-    { name: 'Invisible', color: '#F4F4F5', description: 'Non-visible disabilities' },
-    { name: 'Psychiatric', color: '#38BDF8', description: 'Psychiatric & emotional' },
-    { name: 'Sensory', color: '#34D399', description: 'Sensory disabilities' }
+    { name: 'Life', color: '#E40303', description: 'Red' },
+    { name: 'Healing', color: '#FF8C00', description: 'Orange' },
+    { name: 'Sunlight', color: '#FFD700', description: 'Yellow' },
+    { name: 'Nature', color: '#008026', description: 'Green' },
+    { name: 'Serenity', color: '#24408E', description: 'Blue' },
+    { name: 'Spirit', color: '#732982', description: 'Purple' }
 ];
 
 export default function Landing() {
@@ -74,8 +76,8 @@ export default function Landing() {
         <Layout>
             <SEO
                 title="Home"
-                description="A global platform connecting people with disabilities, service providers, and NGOs. Building community, breaking barriers, and celebrating disability pride together."
-                keywords="disability pride, inclusive community, advocacy, accessibility, service providers, NGOs"
+                description="MyEnAb - A global platform connecting people with disabilities, service providers, and NGOs. Building community, breaking barriers, and celebrating disability pride together."
+                keywords="MyEnAb, disability pride, inclusive community, advocacy, accessibility, service providers, NGOs"
             />
             {/* Hero Section */}
             <section className="relative overflow-hidden" data-testid="hero-section">
@@ -84,26 +86,19 @@ export default function Landing() {
 
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
                     <div className="max-w-3xl">
-                        <div className="flex gap-2 mb-6 animate-fade-up">
-                            {prideColors.map((item, i) => (
-                                <span
-                                    key={item.name}
-                                    className="w-4 h-4 rounded-full"
-                                    style={{ backgroundColor: item.color }}
-                                    title={item.description}
-                                ></span>
-                            ))}
+                        <div className="flex items-center mb-6 animate-fade-up">
+                            <MyEnAbLogo className="w-64 h-20" />
                         </div>
 
                         <h1 className="font-lexend text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up" style={{ animationDelay: '0.1s' }}>
                             Connect. Support.
-                            <span className="block mt-2 bg-gradient-to-r from-pride-red via-pride-gold to-pride-green bg-clip-text text-transparent">
-                                Celebrate Pride.
+                            <span className="block mt-2 bg-gradient-to-r from-[#E40303] via-[#FF8C00] via-[#FFD700] via-[#008026] via-[#24408E] to-[#732982] bg-clip-text text-transparent">
+                                MyEnAb
                             </span>
                         </h1>
 
                         <p className="text-lg md:text-xl text-zinc-300 mb-8 leading-relaxed animate-fade-up" style={{ animationDelay: '0.2s' }}>
-                            A global platform connecting people with disabilities, service providers, and NGOs.
+                            MyEnAb is a global platform connecting people with disabilities, service providers, and NGOs.
                             Building community, breaking barriers, and celebrating disability pride together.
                         </p>
 
@@ -157,11 +152,12 @@ export default function Landing() {
                         {features.map((feature, index) => {
                             const Icon = feature.icon;
                             const colorMap = {
-                                'pride-red': '#FF5C5C',
-                                'pride-gold': '#FFD700',
-                                'pride-white': '#F4F4F5',
-                                'pride-blue': '#38BDF8',
-                                'pride-green': '#34D399'
+                                'pride-red': '#E40303',
+                                'pride-gold': '#FF8C00',
+                                'pride-yellow': '#FFD700',
+                                'pride-green': '#008026',
+                                'pride-blue': '#24408E',
+                                'pride-purple': '#732982'
                             };
                             const accentColor = colorMap[feature.color] || '#FFFFFF';
 

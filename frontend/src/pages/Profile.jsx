@@ -67,7 +67,7 @@ export default function Profile() {
         <Layout>
             <SEO
                 title="Your Profile"
-                description="Manage your Disability Pride Connect profile, preferences, and community presence."
+                description="Manage your MyEnAb profile, preferences, and community presence."
             />
             <Toaster position="top-center" richColors />
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

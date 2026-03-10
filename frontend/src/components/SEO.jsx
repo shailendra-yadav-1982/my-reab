@@ -2,9 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 const SEO = ({ title, description, keywords, ogTitle, ogDescription, ogImage, ogUrl, ogType }) => {
-    const siteTitle = 'Disability Pride Connect';
+    const siteTitle = 'MyEnAb';
     const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
-    const defaultDescription = 'Disability Pride Connect - A community platform for advocacy and support.';
+    const defaultDescription = 'MyEnAb - A community platform for advocacy and support.';
 
     return (
         <Helmet>
