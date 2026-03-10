@@ -37,6 +37,7 @@ app.add_middleware(
 app.include_router(api_router, prefix="/api")
 
 @app.get("/")
+@app.get("/health")
 async def root():
     return {"message": "MyEnAb API is running", "status": "healthy"}
 
