@@ -3,7 +3,7 @@ import json
 import sys
 from datetime import datetime, timezone, timedelta
 
-class DisabilityPrideConnectAPITester:
+class MyEnAbAPITester:
     def __init__(self, base_url="http://localhost:8001"):
         self.base_url = f"{base_url}/api"
         self.token = None
@@ -262,7 +262,7 @@ class DisabilityPrideConnectAPITester:
 
     def run_comprehensive_test(self):
         """Run all tests in sequence"""
-        print("🚀 Starting DisabilityPrideConnect API Comprehensive Test")
+        print("🚀 Starting MyEnAb API Comprehensive Test")
         print("=" * 60)
         
         # Basic health checks
@@ -299,7 +299,7 @@ class DisabilityPrideConnectAPITester:
         return success_rate > 80
 
 def main():
-    tester = DisabilityPrideConnectAPITester()
+    tester = MyEnAbAPITester()
     success = tester.run_comprehensive_test()
     return 0 if success else 1
 

@@ -1,10 +1,10 @@
 # MyEnAb - Product Requirements Document
 
 ## Overview
-A global platform for people with disabilities to connect, share experiences, find service providers, and celebrate disability pride.
+A global platform for people with disabilities to connect, share experiences, find service providers, and celebrate disability inclusion.
 
 ## Original Problem Statement
-Build a platform for people with disability to connect all around the world. The purpose is to help disabled people build social contact, connect with disability service providers, NGOs to increase their reach for supporting globally. Theme based on the Disability Pride Flag (charcoal gray background with red, gold, white, blue, and green stripes representing different disability categories).
+Build a platform for people with disability to connect all around the world. The purpose is to help disabled people build social contact, connect with disability service providers, NGOs to increase their reach for supporting globally. Theme based on the Disability Inclusion Flag (charcoal gray background with red, gold, white, blue, and green stripes representing different disability categories).
 
 ## Architecture
 - **Frontend**: React 19 with Tailwind CSS, Shadcn UI components
@@ -40,7 +40,7 @@ Build a platform for people with disability to connect all around the world. The
 - Platform statistics endpoint
 
 ### Frontend (95% Complete)
-- Landing page with Disability Pride Flag theme
+- Landing page with Disability Inclusion Flag theme
 - Login/Register with disability category selection
 - Dashboard with stats, quick actions, recent activity
 - Forums page with create post, categories, search
@@ -53,11 +53,11 @@ Build a platform for people with disability to connect all around the world. The
 
 ### Design Implementation
 - Charcoal/dark theme (#121212 background)
-- Pride accent colors: Red (#FF5C5C), Gold (#FFD700), White (#F4F4F5), Blue (#38BDF8), Green (#34D399)
+- Inclusion accent colors: Red (#FF5C5C), Gold (#FFD700), White (#F4F4F5), Blue (#38BDF8), Green (#34D399)
 - Lexend font for headings, Atkinson Hyperlegible for body (accessibility)
 - Diagonal stripe motif representing "cutting across barriers"
 - High contrast (WCAG AAA compliance)
-- Disability category badges with pride colors
+- Disability category badges with inclusion colors
 
 ## Prioritized Backlog
 

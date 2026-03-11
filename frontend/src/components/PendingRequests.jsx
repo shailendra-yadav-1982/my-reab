@@ -43,7 +43,7 @@ export function PendingRequests() {
         <Card className="bg-[#18181B] border-[#27272A] mb-8">
             <CardHeader>
                 <CardTitle className="font-lexend text-lg flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-pride-gold" />
+                    <Clock className="w-5 h-5 text-inclusion-gold" />
                     Pending Connection Requests
                 </CardTitle>
             </CardHeader>
@@ -52,8 +52,8 @@ export function PendingRequests() {
                     {requests.map((request) => (
                         <div key={request.id} className="p-4 rounded-lg bg-[#121212] border border-[#27272A] flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-pride-blue/20 flex items-center justify-center">
-                                    <Users className="w-5 h-5 text-pride-blue" />
+                                <div className="w-10 h-10 rounded-full bg-inclusion-blue/20 flex items-center justify-center">
+                                    <Users className="w-5 h-5 text-inclusion-blue" />
                                 </div>
                                 <div className="text-sm">
                                     <div className="font-medium">{request.sender_name || `User ${request.sender_id.substring(0, 8)}`}</div>
@@ -64,7 +64,7 @@ export function PendingRequests() {
                                 <Button
                                     size="sm"
                                     variant="ghost"
-                                    className="h-8 w-8 p-0 text-pride-green hover:bg-pride-green/10"
+                                    className="h-8 w-8 p-0 text-inclusion-green hover:bg-inclusion-green/10"
                                     onClick={() => handleAction(request.id, 'accept')}
                                 >
                                     <UserCheck className="w-4 h-4" />
@@ -72,7 +72,7 @@ export function PendingRequests() {
                                 <Button
                                     size="sm"
                                     variant="ghost"
-                                    className="h-8 w-8 p-0 text-pride-red hover:bg-pride-red/10"
+                                    className="h-8 w-8 p-0 text-inclusion-red hover:bg-inclusion-red/10"
                                     onClick={() => handleAction(request.id, 'decline')}
                                 >
                                     <UserX className="w-4 h-4" />

@@ -7,5 +7,5 @@
     <path d="M0 70 L70 0 L85 0 L0 85 Z" fill="#38BDF8" />
     <path d="M0 85 L85 0 L100 0 L100 15 L15 100 L0 100 Z" fill="#34D399" />
   </g>
-  <text x="50" y="55" text-anchor="middle" fill="white" font-size="40" font-weight="bold" font-family="Lexend, sans-serif">DP</text>
+  <text x="50" y="55" text-anchor="middle" fill="white" font-size="40" font-weight="bold" font-family="Lexend, sans-serif">ME</text>
 </svg>

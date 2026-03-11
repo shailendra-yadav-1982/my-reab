@@ -58,7 +58,7 @@ module.exports = {
                                 '4': 'hsl(var(--chart-4))',
                                 '5': 'hsl(var(--chart-5))'
                         },
-                        pride: {
+                        inclusion: {
                                 red: '#FF5C5C',
                                 gold: '#FFD700',
                                 white: '#F4F4F5',

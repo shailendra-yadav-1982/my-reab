@@ -136,7 +136,7 @@ export default function Community() {
                         filteredMembers.map((member) => (
                             <Card key={member.id} className="bg-[#18181B] border-[#27272A] hover:border-white/20 transition-colors" data-testid={`member-${member.id}`}>
                                 <CardContent className="p-6 text-center">
-                                    <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-pride-red via-pride-gold to-pride-green flex items-center justify-center mb-4">
+                                    <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-inclusion-red via-inclusion-gold to-inclusion-green flex items-center justify-center mb-4">
                                         <span className="text-xl font-bold text-black">{member.name?.charAt(0).toUpperCase()}</span>
                                     </div>
                                     <h3 className="font-lexend font-semibold mb-1">{member.name}</h3>

@@ -322,11 +322,11 @@ export default function Directory() {
                             <Card key={provider.id} className="bg-[#18181B] border-[#27272A] hover:border-white/20 transition-colors" data-testid={`provider-${provider.id}`}>
                                 <CardContent className="p-6">
                                     <div className="flex items-start justify-between mb-4">
-                                        <div className="w-12 h-12 rounded-xl bg-pride-blue/20 flex items-center justify-center">
-                                            <Building2 className="w-6 h-6 text-pride-blue" />
+                                        <div className="w-12 h-12 rounded-xl bg-inclusion-blue/20 flex items-center justify-center">
+                                            <Building2 className="w-6 h-6 text-inclusion-blue" />
                                         </div>
                                         {provider.is_verified && (
-                                            <span className="px-2 py-1 bg-pride-green/20 text-pride-green text-xs rounded-full">
+                                            <span className="px-2 py-1 bg-inclusion-green/20 text-inclusion-green text-xs rounded-full">
                                                 Verified
                                             </span>
                                         )}
@@ -377,7 +377,7 @@ export default function Directory() {
                                             </a>
                                         )}
                                         {provider.rating > 0 && (
-                                            <span className="flex items-center gap-1 text-sm text-pride-gold ml-auto">
+                                            <span className="flex items-center gap-1 text-sm text-inclusion-gold ml-auto">
                                                 <Star className="w-4 h-4 fill-current" />
                                                 {provider.rating.toFixed(1)}
                                             </span>

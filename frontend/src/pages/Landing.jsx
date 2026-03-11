@@ -21,37 +21,37 @@ const features = [
         icon: Users,
         title: 'Global Community',
         description: 'Connect with people who understand your experiences from around the world.',
-        color: 'pride-red'
+        color: 'inclusion-red'
     },
     {
         icon: MessageSquare,
         title: 'Discussion Forums',
         description: 'Share stories, ask questions, and support each other in topic-based forums.',
-        color: 'pride-gold'
+        color: 'inclusion-gold'
     },
     {
         icon: Building2,
         title: 'Service Directory',
         description: 'Find trusted service providers, NGOs, and support organizations near you.',
-        color: 'pride-white'
+        color: 'inclusion-white'
     },
     {
         icon: Calendar,
         title: 'Events & Meetups',
         description: 'Discover virtual and in-person events designed with accessibility in mind.',
-        color: 'pride-blue'
+        color: 'inclusion-blue'
     },
     {
         icon: BookOpen,
         title: 'Resource Library',
         description: 'Access guides, articles, and tools to help navigate daily challenges.',
-        color: 'pride-green'
+        color: 'inclusion-green'
     },
     {
         icon: Heart,
         title: 'Direct Messaging',
         description: 'Build meaningful connections through private, secure conversations.',
-        color: 'pride-red'
+        color: 'inclusion-red'
     }
 ];
 
@@ -62,7 +62,7 @@ const stats = [
     { value: '120+', label: 'Countries' }
 ];
 
-const prideColors = [
+const inclusionColors = [
     { name: 'Life', color: '#E40303', description: 'Red' },
     { name: 'Healing', color: '#FF8C00', description: 'Orange' },
     { name: 'Sunlight', color: '#FFD700', description: 'Yellow' },
@@ -76,13 +76,13 @@ export default function Landing() {
         <Layout>
             <SEO
                 title="Home"
-                description="MyEnAb - A global platform connecting people with disabilities, service providers, and NGOs. Building community, breaking barriers, and celebrating disability pride together."
-                keywords="MyEnAb, disability pride, inclusive community, advocacy, accessibility, service providers, NGOs"
+                description="MyEnAb connects the global disability community, persons with disabilities, service providers, entrepreneurs and NGOs.Creating a world where barriers fall and every ability can thrive."
+                keywords="MyEnAb, disability inclusion, inclusive community, advocacy, accessibility, service providers, NGOs"
             />
             {/* Hero Section */}
             <section className="relative overflow-hidden" data-testid="hero-section">
-                {/* Diagonal Pride Stripes Background */}
-                <div className="absolute inset-0 pride-gradient-bg opacity-50"></div>
+                {/* Diagonal Inclusion Stripes Background */}
+                <div className="absolute inset-0 inclusion-gradient-bg opacity-50"></div>
 
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
                     <div className="max-w-3xl">
@@ -98,8 +98,7 @@ export default function Landing() {
                         </h1>
 
                         <p className="text-lg md:text-xl text-zinc-300 mb-8 leading-relaxed animate-fade-up" style={{ animationDelay: '0.2s' }}>
-                            MyEnAb is a global platform connecting people with disabilities, service providers, and NGOs.
-                            Building community, breaking barriers, and celebrating disability pride together.
+                            MyEnAb connects the global disability community, persons with disabilities, service providers, entrepreneurs and NGOs.Creating a world where barriers fall and every ability can thrive.
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>
@@ -152,12 +151,12 @@ export default function Landing() {
                         {features.map((feature, index) => {
                             const Icon = feature.icon;
                             const colorMap = {
-                                'pride-red': '#E40303',
-                                'pride-gold': '#FF8C00',
-                                'pride-yellow': '#FFD700',
-                                'pride-green': '#008026',
-                                'pride-blue': '#24408E',
-                                'pride-purple': '#732982'
+                                'inclusion-red': '#E40303',
+                                'inclusion-gold': '#FF8C00',
+                                'inclusion-yellow': '#FFD700',
+                                'inclusion-green': '#008026',
+                                'inclusion-blue': '#24408E',
+                                'inclusion-purple': '#732982'
                             };
                             const accentColor = colorMap[feature.color] || '#FFFFFF';
 
@@ -185,26 +184,26 @@ export default function Landing() {
                 </div>
             </section>
 
-            {/* Pride Flag Meaning Section */}
-            <section className="py-20 bg-[#0a0a0a]" data-testid="pride-section">
+            {/* Inclusion Flag Meaning Section */}
+            <section className="py-20 bg-[#0a0a0a]" data-testid="inclusion-section">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <h2 className="font-lexend text-3xl md:text-4xl font-bold mb-4">
-                            The Disability Pride Flag
+                            The Disability Inclusion Flag
                         </h2>
                         <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
                             Each color represents a different aspect of the disability community,
-                            designed by Ann Magill to symbolize solidarity and pride.
+                            designed by Ann Magill to symbolize solidarity and inclusion.
                         </p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                        {prideColors.map((item, index) => (
+                        {inclusionColors.map((item, index) => (
                             <div
                                 key={item.name}
                                 className="relative p-6 rounded-2xl border border-[#27272A] bg-[#121212] animate-fade-up"
                                 style={{ animationDelay: `${index * 0.1}s` }}
-                                data-testid={`pride-color-${item.name.toLowerCase()}`}
+                                data-testid={`inclusion-color-${item.name.toLowerCase()}`}
                             >
                                 <div
                                     className="w-full h-2 rounded-full mb-4"
@@ -238,7 +237,7 @@ export default function Landing() {
 
             {/* CTA Section */}
             <section className="py-20 relative overflow-hidden" data-testid="cta-section">
-                <div className="absolute inset-0 pride-gradient-bg opacity-30"></div>
+                <div className="absolute inset-0 inclusion-gradient-bg opacity-30"></div>
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="font-lexend text-3xl md:text-4xl font-bold mb-6">
                         Ready to Join Our Community?

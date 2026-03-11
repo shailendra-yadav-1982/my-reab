@@ -196,7 +196,7 @@ export const Layout = ({ children }) => {
                             </div>
                             <p className="text-zinc-400 text-sm leading-relaxed max-w-md">
                                 A global platform connecting people with disabilities, service providers, and NGOs.
-                                Building community, breaking barriers, celebrating pride.
+                                Building community, breaking barriers, celebrating inclusion.
                             </p>
                             <div className="flex gap-2 mt-4">
                                 <span className="w-3 h-3 rounded-full bg-[#E40303]"></span>

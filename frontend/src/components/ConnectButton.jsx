@@ -55,7 +55,7 @@ export function ConnectButton({ userId, className }) {
 
     if (status === 'accepted') {
         return (
-            <Button variant="ghost" size="sm" className={`text-pride-green bg-pride-green/10 hover:bg-pride-green/20 ${className}`} disabled>
+            <Button variant="ghost" size="sm" className={`text-inclusion-green bg-inclusion-green/10 hover:bg-inclusion-green/20 ${className}`} disabled>
                 <UserCheck className="w-4 h-4 mr-2" />
                 Connected
             </Button>
@@ -64,7 +64,7 @@ export function ConnectButton({ userId, className }) {
 
     if (status === 'pending') {
         return (
-            <Button variant="ghost" size="sm" className={`text-pride-gold bg-pride-gold/10 hover:bg-pride-gold/20 ${className}`} disabled>
+            <Button variant="ghost" size="sm" className={`text-inclusion-gold bg-inclusion-gold/10 hover:bg-inclusion-gold/20 ${className}`} disabled>
                 <Clock className="w-4 h-4 mr-2" />
                 Requested
             </Button>

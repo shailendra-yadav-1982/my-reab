@@ -281,7 +281,7 @@ export default function Events() {
                                                 type="button"
                                                 onClick={() => handleFeatureToggle(feature)}
                                                 className={`px-3 py-2 rounded-lg text-sm text-left transition-colors ${newEvent.accessibility_features.includes(feature)
-                                                    ? 'bg-pride-green/20 text-pride-green border border-pride-green/30'
+                                                    ? 'bg-inclusion-green/20 text-inclusion-green border border-inclusion-green/30'
                                                     : 'bg-[#27272A] text-zinc-300 border border-transparent hover:border-white/20'
                                                     }`}
                                                 data-testid={`accessibility-${feature.toLowerCase().replace(/ /g, '-')}`}
@@ -341,14 +341,14 @@ export default function Events() {
                     ) : events.length > 0 ? (
                         events.map((event) => (
                             <Card key={event.id} className="bg-[#18181B] border-[#27272A] hover:border-white/20 transition-colors overflow-hidden" data-testid={`event-${event.id}`}>
-                                <div className={`h-2 ${event.is_virtual ? 'bg-pride-blue' : 'bg-pride-green'}`}></div>
+                                <div className={`h-2 ${event.is_virtual ? 'bg-inclusion-blue' : 'bg-inclusion-green'}`}></div>
                                 <CardContent className="p-6">
                                     <div className="flex items-center gap-3 mb-4">
-                                        <div className="w-14 h-14 rounded-xl bg-pride-blue/20 flex flex-col items-center justify-center">
-                                            <span className="text-xs text-pride-blue font-medium">
+                                        <div className="w-14 h-14 rounded-xl bg-inclusion-blue/20 flex flex-col items-center justify-center">
+                                            <span className="text-xs text-inclusion-blue font-medium">
                                                 {new Date(event.start_date).toLocaleDateString('en', { month: 'short' })}
                                             </span>
-                                            <span className="text-xl font-bold text-pride-blue">
+                                            <span className="text-xl font-bold text-inclusion-blue">
                                                 {new Date(event.start_date).getDate()}
                                             </span>
                                         </div>
@@ -364,7 +364,7 @@ export default function Events() {
                                     <div className="flex items-center gap-2 text-sm text-zinc-400 mb-2">
                                         {event.is_virtual ? (
                                             <>
-                                                <Video className="w-4 h-4 text-pride-blue" />
+                                                <Video className="w-4 h-4 text-inclusion-blue" />
                                                 <span>Virtual Event</span>
                                             </>
                                         ) : (
@@ -382,7 +382,7 @@ export default function Events() {
                                     {event.accessibility_features?.length > 0 && (
                                         <div className="flex flex-wrap gap-1 mb-4">
                                             {event.accessibility_features.slice(0, 2).map(feature => (
-                                                <span key={feature} className="px-2 py-1 bg-pride-green/10 text-pride-green text-xs rounded">
+                                                <span key={feature} className="px-2 py-1 bg-inclusion-green/10 text-inclusion-green text-xs rounded">
                                                     {feature}
                                                 </span>
                                             ))}

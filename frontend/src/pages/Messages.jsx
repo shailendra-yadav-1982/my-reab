@@ -146,7 +146,7 @@ export default function Messages() {
                                             className="w-full px-4 py-3 text-left hover:bg-[#27272A] flex items-center gap-3"
                                             data-testid={`search-result-${u.id}`}
                                         >
-                                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pride-gold to-pride-green flex items-center justify-center">
+                                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-inclusion-gold to-inclusion-green flex items-center justify-center">
                                                 <span className="text-xs font-bold text-black">{u.name?.charAt(0).toUpperCase()}</span>
                                             </div>
                                             <span className="text-sm">{u.name}</span>
@@ -167,14 +167,14 @@ export default function Messages() {
                                             }`}
                                         data-testid={`conversation-${conv.user_id}`}
                                     >
-                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pride-red to-pride-gold flex items-center justify-center flex-shrink-0">
+                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-inclusion-red to-inclusion-gold flex items-center justify-center flex-shrink-0">
                                             <span className="text-sm font-bold text-black">{conv.user_name?.charAt(0).toUpperCase()}</span>
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center justify-between">
                                                 <span className="font-medium truncate">{conv.user_name}</span>
                                                 {conv.unread_count > 0 && (
-                                                    <span className="w-5 h-5 bg-pride-blue rounded-full text-xs flex items-center justify-center">
+                                                    <span className="w-5 h-5 bg-inclusion-blue rounded-full text-xs flex items-center justify-center">
                                                         {conv.unread_count}
                                                     </span>
                                                 )}
@@ -206,7 +206,7 @@ export default function Messages() {
                                     >
                                         <ArrowLeft className="w-5 h-5" />
                                     </button>
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pride-red to-pride-gold flex items-center justify-center">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-inclusion-red to-inclusion-gold flex items-center justify-center">
                                         <span className="text-sm font-bold text-black">{selectedUser.user_name?.charAt(0).toUpperCase()}</span>
                                     </div>
                                     <span className="font-semibold">{selectedUser.user_name}</span>

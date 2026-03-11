@@ -1,9 +1,8 @@
 {
-  "project_name": "DisabilityPrideConnect",
+  "project_name": "MyEnAb",
   "design_philosophy": {
-    "identity": "E1 - The Anti-AI Designer",
     "core_principles": [
-      "Fusion over Imitation: Brutalism x Swiss Style x Disability Pride Flag",
+      "Fusion over Imitation: Brutalism x Swiss Style x Disability Inclusion Flag",
       "Accessibility First: WCAG AAA compliance is the baseline, not the goal",
       "The 'Cutting' Motif: Use diagonal lines (CSS gradients/clip-paths) to symbolize breaking barriers",
       "High Contrast: Dark Mode by default (Charcoal/Black) with vibrant, distinct accents",
@@ -45,7 +44,7 @@
         "secondary": "#E4E4E7",
         "muted": "#A1A1AA"
       },
-      "pride_accents": {
+      "inclusion_accents": {
         "red_physical": "#FF5C5C",
         "gold_neuro": "#FFD700",
         "white_invisible": "#F4F4F5",
@@ -63,7 +62,7 @@
     "usage_rules": [
       "Background must be #121212 (Zinc 950) or #000000 (Black).",
       "Text must be #FFFFFF or #E4E4E7. Do not use dark gray text.",
-      "Use 'Pride Accents' for tags, category indicators, and borders. Do not use them for large background areas behind text unless text is black.",
+      "Use 'Inclusion Accents' for tags, category indicators, and borders. Do not use them for large background areas behind text unless text is black.",
       "Borders should be visible (1px solid #27272A) to define areas for low vision users."
     ]
   },
@@ -114,7 +113,7 @@
   },
   "instructions_to_main_agent": [
     "1. Install 'Atkinson Hyperlegible' and 'Lexend' fonts via Google Fonts immediately.",
-    "2. Configure Tailwind with the 'Pride Accents' in the colors object.",
+    "2. Configure Tailwind with the 'Inclusion Accents' in the colors object.",
     "3. Build the layout using the 'Bento Grid' strategy for the dashboard and directory.",
     "4. Ensure every button and input has a 'data-testid' for testing.",
     "5. Do NOT use standard Shadcn cards without customizing the border and background colors to match the guidelines.",

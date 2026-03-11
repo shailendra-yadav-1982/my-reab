@@ -34,14 +34,14 @@
         --ring: 0 0% 100%;
         --radius: 0.75rem;
 
-        --pride-red: #E40303;
-        --pride-orange: #FF8C00;
-        --pride-yellow: #FFD700;
-        --pride-green: #008026;
-        --pride-blue: #24408E;
-        --pride-purple: #732982;
-        --pride-charcoal: #121212;
-        --pride-paper: #18181B;
+        --inclusion-red: #E40303;
+        --inclusion-orange: #FF8C00;
+        --inclusion-yellow: #FFD700;
+        --inclusion-green: #008026;
+        --inclusion-blue: #24408E;
+        --inclusion-purple: #732982;
+        --inclusion-charcoal: #121212;
+        --inclusion-paper: #18181B;
     }
 }
 
@@ -97,7 +97,7 @@
 }
 
 @layer components {
-    .pride-gradient-bg {
+    .inclusion-gradient-bg {
         background: linear-gradient(135deg,
                 transparent 0%,
                 transparent 35%,
@@ -124,7 +124,7 @@
         clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
     }
 
-    .pride-border-left {
+    .inclusion-border-left {
         /* Utility removed to fix white stripe issue as per user request. Use MyEnAb branded borders instead. */
     }
 

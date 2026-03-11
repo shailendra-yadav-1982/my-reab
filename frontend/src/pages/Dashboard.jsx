@@ -104,7 +104,7 @@ export default function Dashboard() {
                                         >
                                             <Icon className="w-5 h-5" style={{ color: stat.color }} />
                                         </div>
-                                        <TrendingUp className="w-4 h-4 text-pride-green" />
+                                        <TrendingUp className="w-4 h-4 text-inclusion-green" />
                                     </div>
                                     <div className="font-lexend text-2xl font-bold">{stat.value}</div>
                                     <div className="text-zinc-400 text-sm">{stat.label}</div>
@@ -173,7 +173,7 @@ export default function Dashboard() {
                                     <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-50" />
                                     <p>No discussions yet</p>
                                     <Link to="/forums">
-                                        <Button variant="link" className="text-pride-gold mt-2">
+                                        <Button variant="link" className="text-inclusion-gold mt-2">
                                             Start a conversation
                                         </Button>
                                     </Link>
@@ -200,11 +200,11 @@ export default function Dashboard() {
                                         <Link key={event.id} to={`/events/${event.id}`}>
                                             <div className="p-4 rounded-lg bg-[#121212] border border-[#27272A] hover:border-white/20 transition-colors">
                                                 <div className="flex items-start gap-4">
-                                                    <div className="w-12 h-12 rounded-lg bg-pride-blue/20 flex flex-col items-center justify-center flex-shrink-0">
-                                                        <span className="text-xs text-pride-blue font-medium">
+                                                    <div className="w-12 h-12 rounded-lg bg-inclusion-blue/20 flex flex-col items-center justify-center flex-shrink-0">
+                                                        <span className="text-xs text-inclusion-blue font-medium">
                                                             {new Date(event.start_date).toLocaleDateString('en', { month: 'short' })}
                                                         </span>
-                                                        <span className="text-lg font-bold text-pride-blue">
+                                                        <span className="text-lg font-bold text-inclusion-blue">
                                                             {new Date(event.start_date).getDate()}
                                                         </span>
                                                     </div>
@@ -225,7 +225,7 @@ export default function Dashboard() {
                                     <Calendar className="w-12 h-12 mx-auto mb-3 opacity-50" />
                                     <p>No upcoming events</p>
                                     <Link to="/events">
-                                        <Button variant="link" className="text-pride-blue mt-2">
+                                        <Button variant="link" className="text-inclusion-blue mt-2">
                                             Create an event
                                         </Button>
                                     </Link>

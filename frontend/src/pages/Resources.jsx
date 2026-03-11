@@ -288,7 +288,7 @@ export default function Resources() {
                                                 {resource.views}
                                             </div>
                                         </div>
-                                        <h3 className="font-lexend text-lg font-semibold mb-2 group-hover:text-pride-gold transition-colors">
+                                        <h3 className="font-lexend text-lg font-semibold mb-2 group-hover:text-inclusion-gold transition-colors">
                                             {resource.title}
                                         </h3>
                                         <p className="text-zinc-400 text-sm line-clamp-3 mb-4">{resource.description}</p>
@@ -312,7 +312,7 @@ export default function Resources() {
                                                 href={resource.url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="inline-flex items-center gap-2 text-sm text-pride-blue hover:underline"
+                                                className="inline-flex items-center gap-2 text-sm text-inclusion-blue hover:underline"
                                             >
                                                 <ExternalLink className="w-4 h-4" />
                                                 View Resource

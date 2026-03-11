@@ -251,7 +251,7 @@ export default function Register() {
                     </CardContent>
                 </Card>
 
-                {/* Pride colors decoration */}
+                {/* Inclusion colors decoration */}
                 <div className="flex justify-center gap-2 mt-8">
                     <span className="w-3 h-3 rounded-full bg-[#E40303]"></span>
                     <span className="w-3 h-3 rounded-full bg-[#FF8C00]"></span>

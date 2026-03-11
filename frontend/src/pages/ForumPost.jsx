@@ -115,7 +115,7 @@ export default function ForumPost() {
         <Layout>
             <SEO
                 title={post?.title || "Forum Post"}
-                description={post?.content?.substring(0, 160) || "Join the discussion on Disability Pride Connect."}
+                description={post?.content?.substring(0, 160) || "Join the discussion on Disability Inclusion Connect."}
             />
             <Toaster position="top-center" richColors />
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -129,7 +129,7 @@ export default function ForumPost() {
                 <Card className="bg-[#18181B] border-[#27272A] mb-8" data-testid="forum-post">
                     <CardContent className="p-6 md:p-8">
                         <div className="mb-4">
-                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-pride-gold/20 text-pride-gold">
+                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-inclusion-gold/20 text-inclusion-gold">
                                 {post.category}
                             </span>
                         </div>
@@ -156,7 +156,7 @@ export default function ForumPost() {
                         <div className="flex items-center gap-6 pt-6 border-t border-[#27272A]">
                             <button
                                 onClick={handleLike}
-                                className="flex items-center gap-2 text-zinc-400 hover:text-pride-red transition-colors"
+                                className="flex items-center gap-2 text-zinc-400 hover:text-inclusion-red transition-colors"
                                 data-testid="like-post-btn"
                             >
                                 <Heart className="w-5 h-5" />
@@ -178,7 +178,7 @@ export default function ForumPost() {
                     {user ? (
                         <form onSubmit={handleSubmitComment} className="mb-8" data-testid="comment-form">
                             <div className="flex gap-4">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pride-blue to-pride-green flex items-center justify-center flex-shrink-0">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-inclusion-blue to-inclusion-green flex items-center justify-center flex-shrink-0">
                                     <span className="text-sm font-bold text-black">{user.name?.charAt(0).toUpperCase()}</span>
                                 </div>
                                 <div className="flex-1">

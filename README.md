@@ -83,7 +83,7 @@ The platform includes forums, a service-provider directory, event management, pr
 ## Project Structure
 
 ```
-my-reab/
+myenab/
 ├── backend/
 │   ├── server.py            # FastAPI application & all API routes
 │   ├── requirements.txt     # Python dependencies
@@ -144,7 +144,7 @@ my-reab/
 4. **Create a `.env` file** in the `backend/` directory (see [Environment Variables](#environment-variables)):
    ```env
    MONGO_URL=mongodb://localhost:27017
-   DB_NAME=disability_pride_connect
+   DB_NAME=disability_inclusion_connect
    JWT_SECRET=your-secret-key-here
    CORS_ORIGINS=http://localhost:3000
    RESEND_API_KEY=re_your_api_key
@@ -338,7 +338,7 @@ The project deploys as **3 Railway services**: **Backend** (FastAPI), **Frontend
 
 | Variable | Value |
 |---|---|
-| `DB_NAME` | `disability_pride_connect` |
+| `DB_NAME` | `disability_inclusion_connect` |
 | `JWT_SECRET` | A long random string (e.g. run `openssl rand -hex 32`) |
 | `CORS_ORIGINS` | *(set this after your frontend URL is known — see Step 4)* |
 
@@ -377,7 +377,7 @@ Then **redeploy the backend** (Railway → Deployments → Redeploy).
 
 | Check | Expected result |
 |---|---|
-| `GET https://<backend>/api/` | `{"message": "Disability Pride Connect API", "status": "healthy"}` |
+| `GET https://<backend>/api/` | `{"message": "MyEnAb API v1", "status": "healthy"}` |
 | `https://<backend>/docs` | FastAPI Swagger UI loads |
 | `https://<frontend>/` | Landing page loads |
 | Register + Login | Redirects to dashboard; JWT stored in localStorage |

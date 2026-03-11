@@ -35,7 +35,7 @@ export default function SSOCallback() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#09090B] text-white">
             <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pride-gold mx-auto mb-4"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-inclusion-gold mx-auto mb-4"></div>
                 <h2 className="text-xl font-lexend font-semibold">Completing sign in...</h2>
                 <p className="text-zinc-400 mt-2">Please wait while we set up your session.</p>
             </div>

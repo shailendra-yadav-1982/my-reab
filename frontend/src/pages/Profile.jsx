@@ -73,9 +73,9 @@ export default function Profile() {
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Profile Header */}
                 <Card className="bg-[#18181B] border-[#27272A] mb-8 overflow-hidden" data-testid="profile-header">
-                    <div className="h-32 pride-gradient-bg relative">
+                    <div className="h-32 inclusion-gradient-bg relative">
                         <div className="absolute -bottom-12 left-8">
-                            <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-pride-red via-pride-gold to-pride-green flex items-center justify-center border-4 border-[#18181B]">
+                            <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-inclusion-red via-inclusion-gold to-inclusion-green flex items-center justify-center border-4 border-[#18181B]">
                                 <span className="text-3xl font-bold text-black">{user?.name?.charAt(0).toUpperCase()}</span>
                             </div>
                         </div>

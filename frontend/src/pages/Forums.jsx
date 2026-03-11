@@ -268,7 +268,7 @@ export default function Forums() {
                                                 </span>
                                             </div>
                                             <Link to={`/forums/${post.id}`}>
-                                                <h2 className="font-lexend text-xl font-semibold mb-2 hover:text-pride-gold transition-colors">
+                                                <h2 className="font-lexend text-xl font-semibold mb-2 hover:text-inclusion-gold transition-colors">
                                                     {post.title}
                                                 </h2>
                                             </Link>
@@ -281,7 +281,7 @@ export default function Forums() {
                                                 </span>
                                                 <button
                                                     onClick={() => handleLike(post.id)}
-                                                    className="flex items-center gap-1 hover:text-pride-red transition-colors"
+                                                    className="flex items-center gap-1 hover:text-inclusion-red transition-colors"
                                                     data-testid={`like-btn-${post.id}`}
                                                 >
                                                     <Heart className="w-4 h-4" />
