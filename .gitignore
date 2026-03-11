@@ -85,5 +85,8 @@ frontend/node_modules/.cache/default-development/0.pack
 *.env.*
 -e 
 # Environment files
+# Environment files
 *.env
 *.env.*
+secret.key
+memory/
