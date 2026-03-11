@@ -80,7 +80,7 @@ function AppRoutes() {
             <Route path="/verify-email" element={<PublicRoute><VerifyEmail /></PublicRoute>} />
 
             {/* Protected Routes */}
-            <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+            <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/forums" element={<ProtectedRoute><Forums /></ProtectedRoute>} />
             <Route path="/forums/:postId" element={<ProtectedRoute><ForumPost /></ProtectedRoute>} />
