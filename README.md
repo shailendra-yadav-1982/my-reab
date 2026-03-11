@@ -37,7 +37,7 @@ The platform includes forums, a service-provider directory, event management, pr
 
 | Feature | Description |
 |---|---|
-| 🔐 **Authentication** | Register / Login with JWT tokens; bcrypt password hashing |
+| 🔐 **Authentication** | Register/Login with JWT, Email Verification, and Google SSO integration |
 | 💬 **Forums** | Create posts, comment, and like discussions by category and tags |
 | 📂 **Service Directory** | Browse and register disability-focused service providers |
 | 📅 **Events** | Create and attend in-person or virtual events with accessibility features |
@@ -209,7 +209,10 @@ All API routes are prefixed with `/api`.
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
 | `POST` | `/api/auth/register` | ❌ | Register a new user |
+| `GET` | `/api/auth/verify-email` | ❌ | Verify email via 24h token |
 | `POST` | `/api/auth/login` | ❌ | Login and receive JWT token |
+| `GET` | `/api/auth/sso/login` | ❌ | Initiate Google SSO login |
+| `GET` | `/api/auth/sso/callback` | ❌ | Handle SSO callback and setup session |
 | `GET` | `/api/auth/me` | ✅ | Get current user profile |
 | `PUT` | `/api/auth/me` | ✅ | Update current user profile |
 | `POST` | `/api/auth/forgot-password` | ❌ | Request a password reset link |
@@ -281,6 +284,9 @@ All API routes are prefixed with `/api`.
 | `/` | ❌ | Landing page (public home) |
 | `/login` | ❌ | Login form |
 | `/register` | ❌ | Registration form with user type & disability categories |
+| `/verify-email` | ❌ | Email verification status page |
+| `/sso-callback` | ❌ | Processing page for SSO logins |
+| `/onboarding` | ✅ | Mandatory post-SSO profile completion |
 | `/dashboard` | ✅ | Personalised dashboard |
 | `/forums` | ✅ | Forum listing |
 | `/forums/:postId` | ✅ | Single forum post with comments |
@@ -299,10 +305,12 @@ All API routes are prefixed with `/api`.
 
 The application uses **JWT (JSON Web Tokens)** for authentication:
 
-- Tokens are issued on **register** and **login**, valid for **24 hours**.
+- Tokens are issued on **login** and **SSO**, valid for **24 hours**.
 - The token must be sent in the `Authorization` header as a `Bearer` token for protected routes.
 - The frontend stores the token and manages auth state via `AuthContext`.
-- User types: `individual`, `service_provider`, `ngo`, `caregiver`
+- **Email Verification**: New accounts created via form registration must verify their email within 24 hours before they can log in.
+- **SSO Onboarding**: Users logging in via SSO for the first time must complete their profile (user type, location) before accessing protected routes.
+- User types: `individual_disabled`, `volunteer`, `service_provider`, `ngo`, `caregiver`
 - Disability categories: `physical`, `cognitive`, `invisible`, `psychiatric`, `sensory`, `multiple`, `prefer_not_to_say`
 
 ---
