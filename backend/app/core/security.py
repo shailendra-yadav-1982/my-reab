@@ -2,6 +2,7 @@ import bcrypt
 import jwt
 import logging
 from datetime import datetime, timezone, timedelta
+from typing import Optional
 from fastapi import HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from .config import JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRATION_HOURS
