@@ -1,4 +1,7 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { API_URL } from '../config';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Layout } from '../components/Layout';
@@ -55,28 +58,57 @@ const features = [
     }
 ];
 
-const stats = [
-    { value: '50K+', label: 'Community Members' },
-    { value: '1,200+', label: 'Service Providers' },
-    { value: '500+', label: 'Monthly Events' },
-    { value: '120+', label: 'Countries' }
+// Initial fallback stats
+const initialStats = [
+    { key: 'users', value: '50K+', label: 'Community Members' },
+    { key: 'providers', value: '1,200+', label: 'Service Providers' },
+    { key: 'events', value: '500+', label: 'Monthly Events' },
+    { key: 'countries', value: '120+', label: 'Countries' },
+    { key: 'visits', value: '0', label: 'Site Visits' }
 ];
 
 const inclusionColors = [
-    { name: 'Life', color: '#E40303', description: 'Red' },
-    { name: 'Healing', color: '#FF8C00', description: 'Orange' },
-    { name: 'Sunlight', color: '#FFD700', description: 'Yellow' },
-    { name: 'Nature', color: '#008026', description: 'Green' },
-    { name: 'Serenity', color: '#24408E', description: 'Blue' },
-    { name: 'Spirit', color: '#732982', description: 'Purple' }
+    { name: 'Life (Physical)', color: '#FF5C5C', description: 'Represents the resilience and vitality of the physical disability community.' },
+    { name: 'Sunlight (Neurodivergence)', color: '#FFD700', description: 'Symbolizes the bright evolution and diverse minds in neurodivergence.' },
+    { name: 'Harmony (Invisible)', color: '#F4F4F5', description: 'Recognizes the vast community of invisible and undiagnosed disabilities.' },
+    { name: 'Serenity (Psychiatric)', color: '#38BDF8', description: 'Represents the peace and depth of mental health and psychiatric experiences.' },
+    { name: 'Nature (Sensory)', color: '#34D399', description: 'Symbolizes the connection to nature and diverse sensory perceptions.' }
 ];
 
 export default function Landing() {
+    const [appStats, setAppStats] = useState(initialStats);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                // Record the visit first
+                await axios.post(`${API_URL}/stats/visit`).catch(e => console.error('Error recording visit:', e));
+                
+                const response = await axios.get(`${API_URL}/stats`);
+                const data = response.data;
+                
+                // Map backend data to landing page stats
+                const updatedStats = initialStats.map(stat => ({
+                    ...stat,
+                    value: data[stat.key] !== undefined 
+                        ? (data[stat.key]).toLocaleString() + (data[stat.key] >= 1000 ? '+' : '')
+                        : stat.value
+                }));
+                
+                setAppStats(updatedStats);
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        };
+
+        fetchStats();
+    }, []);
+
     return (
         <Layout>
             <SEO
                 title="Home"
-                description="MyEnAb connects the global disability community, persons with disabilities, service providers, entrepreneurs and NGOs.Creating a world where barriers fall and every ability can thrive."
+                description="MyEnAb bridges individuals with disabilities, volunteers, service providers, NGOs, and caregivers into one global community — building a world where barriers disappear and every ability flourishes."
                 keywords="MyEnAb, disability inclusion, inclusive community, advocacy, accessibility, service providers, NGOs"
             />
             {/* Hero Section */}
@@ -98,7 +130,7 @@ export default function Landing() {
                         </h1>
 
                         <p className="text-lg md:text-xl text-zinc-300 mb-8 leading-relaxed animate-fade-up" style={{ animationDelay: '0.2s' }}>
-                            MyEnAb connects the global disability community, persons with disabilities, service providers, entrepreneurs and NGOs.Creating a world where barriers fall and every ability can thrive.
+                            MyEnAb bridges individuals with disabilities, volunteers, service providers, NGOs, and caregivers into one global community — building a world where barriers disappear and every ability flourishes.
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>
@@ -124,8 +156,8 @@ export default function Landing() {
             {/* Stats Section */}
             <section className="py-16 border-b border-[#27272A]" data-testid="stats-section">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        {stats.map((stat, index) => (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+                        {appStats.map((stat, index) => (
                             <div key={stat.label} className="text-center animate-fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
                                 <div className="font-lexend text-3xl md:text-4xl font-bold text-white mb-2">{stat.value}</div>
                                 <div className="text-zinc-400 text-sm">{stat.label}</div>
@@ -192,12 +224,13 @@ export default function Landing() {
                             The Disability Inclusion Flag
                         </h2>
                         <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-                            Each color represents a different aspect of the disability community,
-                            designed by Ann Magill to symbolize solidarity and inclusion.
+                            The Disability Inclusion Flag symbolizes the diverse experiences of our community.
+                            Designed by Ann Magill, each color represents a specific aspect of disability identity,
+                            set against a charcoal background that honors our shared history and resilience.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                         {inclusionColors.map((item, index) => (
                             <div
                                 key={item.name}
@@ -250,7 +283,7 @@ export default function Landing() {
                         <Link to="/register">
                             <Button className="btn-primary text-base px-8 py-4 h-auto" data-testid="cta-individual-btn">
                                 <Users className="w-5 h-5 mr-2" />
-                                Join as Individual
+                                Join as Member
                             </Button>
                         </Link>
                         <Link to="/register?type=provider">

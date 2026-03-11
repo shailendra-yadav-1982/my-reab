@@ -15,10 +15,11 @@ import { API_URL as API } from '../config';
 
 const userTypes = [
     { value: 'all', label: 'All Members' },
-    { value: 'individual', label: 'Individuals' },
+    { value: 'individual_disabled', label: 'Individual Disabled' },
+    { value: 'volunteer', label: 'Volunteer' },
     { value: 'service_provider', label: 'Service Providers' },
-    { value: 'ngo', label: 'NGOs' },
-    { value: 'caregiver', label: 'Caregivers' }
+    { value: 'ngo', label: 'NGO / Non-Profit' },
+    { value: 'caregiver', label: 'Caregiver / Family Member' }
 ];
 
 const disabilityCategories = [

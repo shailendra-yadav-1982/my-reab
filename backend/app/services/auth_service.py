@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from app.core.database import db
 from app.core.security import hash_password, verify_password, create_token
 from app.models.user import UserCreate, UserLogin
-from .email_service import send_reset_password_email
+from .email_service import send_reset_password_email, send_verification_email
 
 async def register_user(user_data: UserCreate):
     # Check if email exists
@@ -32,10 +32,17 @@ async def register_user(user_data: UserCreate):
     }
     
     await db.users.insert_one(user_doc)
-    token = create_token(user_id)
     
-    user_response = {k: v for k, v in user_doc.items() if k not in ["password", "_id"]}
-    return {"token": token, "user": user_response}
+    # Generate verification token (24h)
+    verify_token = create_token(user_id, expires_delta=timedelta(hours=24), additional_data={"type": "verification"})
+    
+    # Send verification email
+    await send_verification_email(user_data.email, verify_token)
+    
+    return {
+        "message": "Registration successful! Please check your email to verify your account.",
+        "requires_verification": True
+    }
 
 async def login_user(credentials: UserLogin):
     from app.core.config import logger
@@ -64,10 +71,44 @@ async def login_user(credentials: UserLogin):
         logger.error(f"Critical error during password verification for {credentials.email}: {str(e)}")
         raise HTTPException(status_code=500, detail="Authentication service encountered an error")
     
+    if not user.get("is_verified", False):
+        logger.warning(f"Login attempt for unverified email: {credentials.email}")
+        raise HTTPException(status_code=401, detail="Please verify your email address before logging in.")
+
     token = create_token(user["id"])
     user_response = {k: v for k, v in user.items() if k not in ["password", "_id"]}
     logger.info(f"Login successful for: {credentials.email}")
     return {"token": token, "user": user_response}
+
+async def verify_user_email(token: str):
+    import jwt
+    from app.core.config import JWT_SECRET, JWT_ALGORITHM
+    
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        if payload.get("type") != "verification":
+            raise HTTPException(status_code=400, detail="Invalid token type")
+        
+        user_id = payload.get("user_id")
+        user = await db.users.find_one({"id": user_id})
+        
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        if user.get("is_verified"):
+            return {"message": "Email already verified"}
+            
+        await db.users.update_one(
+            {"id": user_id},
+            {"$set": {"is_verified": True}}
+        )
+        
+        return {"message": "Email verified successfully"}
+        
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=400, detail="Verification link has expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=400, detail="Invalid verification link")
 
 async def request_password_reset(email: str):
     user = await db.users.find_one({"email": email})

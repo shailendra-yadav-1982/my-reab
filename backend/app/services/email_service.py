@@ -58,3 +58,56 @@ async def send_reset_password_email(email: str, token: str):
         logger.error(f"Failed to send email to {email}: {str(e)}")
         # Don't raise error to avoid exposing email issues to end users
         # But log it for troubleshooting
+async def send_verification_email(email: str, token: str):
+    """
+    Sends a verification email with a 24-hour link.
+    """
+    try:
+        import resend
+        resend.api_key = os.environ.get("RESEND_API_KEY")
+    except ImportError:
+        logger.warning(f"Resend module not found. Falling back to mock for {email}")
+        resend = None
+
+    frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000').rstrip('/')
+    verify_link = f"{frontend_url}/verify-email?token={token}"
+    
+    html_content = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; background-color: #ffffff;">
+        <h2 style="color: #333333; text-align: center;">Verify Your Account</h2>
+        <p style="color: #555555; font-size: 16px; line-height: 1.5;">
+            Welcome to <strong>MyEnAb</strong>! Please verify your email address to complete your registration. This link will expire in 24 hours.
+        </p>
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{verify_link}" style="background-color: #000000; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Verify Email</a>
+        </div>
+        <p style="color: #777777; font-size: 14px; line-height: 1.5;">
+            If the button doesn't work, you can copy and paste this link into your browser:
+            <br>
+            <a href="{verify_link}" style="color: #007bff;">{verify_link}</a>
+        </p>
+        <hr style="border: 0; border-top: 1px solid #eeeeee; margin: 30px 0;">
+        <p style="color: #999999; font-size: 12px; text-align: center;">
+            Building a world where barriers disappear and every ability flourishes.
+        </p>
+    </div>
+    """
+
+    try:
+        if not resend or not os.environ.get("RESEND_API_KEY") or "your_api_key_here" in os.environ.get("RESEND_API_KEY"):
+            logger.warning(f"RESEND_API_KEY not set. Logging verification link for {email}: {verify_link}")
+            print(f"\n[MOCK EMAIL] To: {email}\n[MOCK EMAIL] Link: {verify_link}\n")
+            return
+            
+        params = {
+            "from": MAIL_FROM,
+            "to": [email],
+            "subject": "Verify your email - MyEnAb",
+            "html": html_content,
+        }
+
+        response = resend.Emails.send(params)
+        logger.info(f"Verification email sent to {email}")
+        return response
+    except Exception as e:
+        logger.error(f"Failed to send verification email to {email}: {str(e)}")

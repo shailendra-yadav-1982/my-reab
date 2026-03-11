@@ -19,10 +19,13 @@ import SSOCallback from "./pages/SSOCallback";
 import Profile from "./pages/Profile";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import VerifyEmail from "./pages/VerifyEmail";
+import Onboarding from "./pages/Onboarding";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
+    const location = window.location.pathname;
 
     if (loading) {
         return (
@@ -34,6 +37,12 @@ const ProtectedRoute = ({ children }) => {
 
     if (!user) {
         return <Navigate to="/login" replace />;
+    }
+
+    // If onboarding is not complete, forcing them to onboarding page
+    // unless they are already there
+    if (user.onboarding_complete === false && location !== '/onboarding') {
+        return <Navigate to="/onboarding" replace />;
     }
 
     return children;
@@ -68,8 +77,10 @@ function AppRoutes() {
             <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
             <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
             <Route path="/sso-callback" element={<PublicRoute><SSOCallback /></PublicRoute>} />
+            <Route path="/verify-email" element={<PublicRoute><VerifyEmail /></PublicRoute>} />
 
             {/* Protected Routes */}
+            <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/forums" element={<ProtectedRoute><Forums /></ProtectedRoute>} />
             <Route path="/forums/:postId" element={<ProtectedRoute><ForumPost /></ProtectedRoute>} />

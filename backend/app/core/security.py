@@ -20,10 +20,16 @@ def verify_password(password: str, hashed: str) -> bool:
         logger.error(f"Bcrypt verification error: {str(e)}")
         raise e
 
-def create_token(user_id: str) -> str:
+def create_token(user_id: str, expires_delta: Optional[timedelta] = None, additional_data: dict = {}) -> str:
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(hours=JWT_EXPIRATION_HOURS)
+    
     payload = {
         "user_id": user_id,
-        "exp": datetime.now(timezone.utc) + timedelta(hours=JWT_EXPIRATION_HOURS)
+        "exp": expire,
+        **additional_data
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 

@@ -42,12 +42,15 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (userData) => {
         const response = await axios.post(`${API}/auth/register`, userData);
-        const { token: newToken, user: newUser } = response.data;
-        localStorage.setItem('token', newToken);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-        setToken(newToken);
-        setUser(newUser);
-        return newUser;
+        if (response.data.token) {
+            const { token: newToken, user: newUser } = response.data;
+            localStorage.setItem('token', newToken);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+            setToken(newToken);
+            setUser(newUser);
+            return newUser;
+        }
+        return response.data;
     };
 
     const logout = () => {

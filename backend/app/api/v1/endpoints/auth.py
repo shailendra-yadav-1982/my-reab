@@ -10,6 +10,10 @@ router = APIRouter()
 async def register(user_data: UserCreate):
     return await auth_service.register_user(user_data)
 
+@router.get("/verify-email", response_model=dict)
+async def verify_email(token: str):
+    return await auth_service.verify_user_email(token)
+
 @router.post("/login", response_model=dict)
 async def login(credentials: UserLogin):
     return await auth_service.login_user(credentials)

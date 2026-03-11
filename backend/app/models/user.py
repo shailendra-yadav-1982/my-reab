@@ -1,7 +1,8 @@
 from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 
-USER_TYPES = ["individual", "service_provider", "ngo", "caregiver"]
+# User types match the registration form options
+USER_TYPES = ["individual_disabled", "volunteer", "service_provider", "ngo", "caregiver"]
 DISABILITY_CATEGORIES = ["physical", "cognitive", "invisible", "psychiatric", "sensory", "multiple", "prefer_not_to_say"]
 
 class UserCreate(BaseModel):

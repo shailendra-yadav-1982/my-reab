@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
 import SEO from '../components/SEO';
@@ -8,6 +9,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Checkbox } from '../components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { DisabilityBadge } from '../components/DisabilityBadge';
 import { Toaster, toast } from 'sonner';
 import { User, MapPin, Mail, Calendar, Save } from 'lucide-react';
@@ -55,7 +57,8 @@ export default function Profile() {
 
     const getUserTypeLabel = (type) => {
         const labels = {
-            individual: 'Individual Member',
+            individual_disabled: 'Individual Disabled',
+            volunteer: 'Volunteer',
             service_provider: 'Service Provider',
             ngo: 'NGO / Non-Profit',
             caregiver: 'Caregiver / Family Member'
@@ -170,7 +173,7 @@ export default function Profile() {
                                     data-testid="profile-bio-input"
                                 />
                             </div>
-                            {user?.user_type === 'individual' && (
+                            {['individual_disabled', 'individual - Disabled'].includes(user?.user_type) && (
                                 <div className="space-y-3">
                                     <Label>Disability Categories</Label>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

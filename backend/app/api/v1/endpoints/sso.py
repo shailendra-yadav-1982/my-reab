@@ -43,8 +43,10 @@ async def sso_callback(request: Request):
             raise HTTPException(status_code=400, detail="OIDC provider did not return an email")
             
         # Check if user exists, if not create
-        user = await db.users.find_one({"email": email})
-        if not user:
+        user_exists = await db.users.find_one({"email": email})
+        is_new_user = False
+        
+        if not user_exists:
             import uuid
             from datetime import datetime, timezone
             user_id = str(uuid.uuid4())
@@ -52,25 +54,33 @@ async def sso_callback(request: Request):
                 "id": user_id,
                 "email": email,
                 "name": user_info.get('name', email.split('@')[0]),
-                "user_type": "individual",
+                "user_type": "individual_disabled", # Use a standard but temporary type
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "is_verified": True,
                 "auth_provider": "oidc",
                 "bio": "",
                 "location": "",
-                "disability_categories": []
+                "disability_categories": [],
+                "onboarding_complete": False # Add flag for onboarding
             }
             await db.users.insert_one(user)
             user_id = user["id"]
+            is_new_user = True
         else:
-            user_id = user["id"]
+            user_id = user_exists["id"]
+            # Check if they finished onboarding previously
+            is_new_user = not user_exists.get("onboarding_complete", True)
             
         # Create JWT for our app
         app_token = create_token(user_id)
         
         # Redirect back to frontend with token
         frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000').rstrip('/')
-        return RedirectResponse(url=f"{frontend_url}/sso-callback?token={app_token}")
+        
+        if is_new_user:
+            return RedirectResponse(url=f"{frontend_url}/onboarding?token={app_token}")
+        else:
+            return RedirectResponse(url=f"{frontend_url}/sso-callback?token={app_token}")
         
     except Exception as e:
         from app.core.config import logger

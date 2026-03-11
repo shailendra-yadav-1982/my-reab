@@ -23,7 +23,6 @@ import { API_URL as API } from '../config';
 
 export default function Dashboard() {
     const { user } = useAuth();
-    const [stats, setStats] = useState({ users: 0, providers: 0, events: 0, posts: 0, resources: 0 });
     const [recentPosts, setRecentPosts] = useState([]);
     const [upcomingEvents, setUpcomingEvents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -34,12 +33,10 @@ export default function Dashboard() {
 
     const fetchData = async () => {
         try {
-            const [statsRes, postsRes, eventsRes] = await Promise.all([
-                axios.get(`${API}/stats`),
+            const [postsRes, eventsRes] = await Promise.all([
                 axios.get(`${API}/forums?limit=5`),
                 axios.get(`${API}/events?limit=5&upcoming=true`)
             ]);
-            setStats(statsRes.data);
             setRecentPosts(postsRes.data);
             setUpcomingEvents(eventsRes.data);
         } catch (error) {
@@ -55,13 +52,6 @@ export default function Dashboard() {
         { path: '/events', label: 'View Events', icon: Calendar, color: '#34D399' },
         { path: '/resources', label: 'Resources', icon: BookOpen, color: '#FF5C5C' },
         { path: '/community', label: 'Community', icon: Users, color: '#F4F4F5' }
-    ];
-
-    const statCards = [
-        { label: 'Community Members', value: stats.users, icon: Users, color: '#FF5C5C' },
-        { label: 'Service Providers', value: stats.providers, icon: Building2, color: '#FFD700' },
-        { label: 'Upcoming Events', value: stats.events, icon: Calendar, color: '#38BDF8' },
-        { label: 'Forum Discussions', value: stats.posts, icon: MessageSquare, color: '#34D399' }
     ];
 
     return (
@@ -89,30 +79,6 @@ export default function Dashboard() {
                 </div>
 
                 <PendingRequests />
-
-                {/* Stats Grid */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" data-testid="stats-grid">
-                    {statCards.map((stat, index) => {
-                        const Icon = stat.icon;
-                        return (
-                            <Card key={stat.label} className="bg-[#18181B] border-[#27272A]" data-testid={`stat-card-${index}`}>
-                                <CardContent className="p-6">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div
-                                            className="w-10 h-10 rounded-lg flex items-center justify-center"
-                                            style={{ backgroundColor: `${stat.color}20` }}
-                                        >
-                                            <Icon className="w-5 h-5" style={{ color: stat.color }} />
-                                        </div>
-                                        <TrendingUp className="w-4 h-4 text-inclusion-green" />
-                                    </div>
-                                    <div className="font-lexend text-2xl font-bold">{stat.value}</div>
-                                    <div className="text-zinc-400 text-sm">{stat.label}</div>
-                                </CardContent>
-                            </Card>
-                        );
-                    })}
-                </div>
 
                 {/* Quick Links */}
                 <div className="mb-8" data-testid="quick-links">
