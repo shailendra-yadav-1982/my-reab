@@ -41,16 +41,16 @@ The platform includes forums, a service-provider directory, event management, pr
 | 💬 **Forums** | Create posts, comment, and like discussions by category and tags |
 | 📂 **Service Directory** | Browse and register disability-focused service providers (Role-restricted) |
 | 📅 **Events** | Create and attend in-person or virtual events with accessibility features (Role-restricted) |
-| 📨 **Private Messaging** | Direct messaging with real-time updates, typing indicators, and online status |
+| 📨 **Private Messaging** | Direct messaging with **real-time updates**, **typing indicators**, and **online status dots** |
 | 📚 **Resources** | Share and discover articles, links, and guides |
 | 👤 **Profiles** | View and edit personal profiles with disability categories |
 | 🏘️ **Community** | Community directory excluding self-view |
 | ♿ **Accessibility** | Dedicated page explaining commitment and features |
 | 🔒 **Role-Based UI** | Dynamic dashboards and actions based on user type (NGO, Volunteer, etc.) |
 | 📊 **Dashboard** | Personalized activity feed, stats, and role-specific Quick Actions |
-| 🤝 **Connections** | Send and manage connection requests with community members |
+| 🤝 **Connections** | Send and manage connection requests; messaging is restricted to connected members |
 | 🔑 **Password Reset** | Recover account via email reset link (Resend integration) |
-| 🔌 **Real-time** | Live messaging, typing status, and presence via WebSockets & RabbitMQ |
+| 🔌 **Real-time** | Multi-instance broadcasting via **WebSockets & RabbitMQ** |
 
 ---
 
@@ -68,6 +68,7 @@ The platform includes forums, a service-provider directory, event management, pr
 | React Hook Form + Zod | Latest | Form management and validation |
 | CRACO | 7 | Create React App config override |
 | Lucide React | Latest | Icon set |
+| Sonner | Latest | Toasts and notifications |
 
 ### Backend
 | Technology | Version | Purpose |
@@ -82,6 +83,7 @@ The platform includes forums, a service-provider directory, event management, pr
 | python-dotenv | 1.0 | Environment configuration |
 | aio-pika | 9.4 | RabbitMQ integration for WebSockets |
 | RabbitMQ | 3.13 | Message broker (Scalable broadcasting) |
+| Authlib | Latest | OIDC/SSO integration |
 
 ---
 
@@ -90,7 +92,12 @@ The platform includes forums, a service-provider directory, event management, pr
 ```
 myenab/
 ├── backend/
-│   ├── server.py            # FastAPI application & all API routes
+│   ├── app/
+│   │   ├── api/             # API Endpoints (v1)
+│   │   ├── core/            # Config, Security, DB, WebSockets
+│   │   ├── models/          # Pydantic schemas (User, Message, etc.)
+│   │   └── services/        # Business logic (Auth, Messaging, etc.)
+│   ├── server.py            # Entry point
 │   ├── requirements.txt     # Python dependencies
 │   ├── Procfile             # Railway start command
 │   └── nixpacks.toml         # Railway build config
@@ -98,18 +105,12 @@ myenab/
 │   ├── src/
 │   │   ├── App.js           # Root component with routing
 │   │   ├── pages/           # Page-level components
-│   │   ├── components/      # Reusable UI components (ConnectButton, PendingRequests, etc.)
+│   │   ├── components/      # Reusable UI components
 │   │   ├── context/         # React Context (AuthContext)
-│   │   ├── hooks/           # Custom React hooks
-│   │   └── lib/             # Utility functions
-│   ├── public/
+│   │   └── config.js        # Environment-aware configuration
 │   ├── package.json
 │   ├── craco.config.js      # CRACO configuration
-│   ├── tailwind.config.js   # Tailwind configuration
-│   ├── Procfile             # Railway start command
-│   └── nixpacks.toml         # Railway build config
-├── tests/                   # Test files
-├── backend_test.py          # Backend integration tests
+│   └── tailwind.config.js   # Tailwind configuration
 └── README.md
 ```
 
@@ -122,7 +123,7 @@ myenab/
 - **Node.js** v20+ and **npm**
 - **Python** 3.10+
 - **MongoDB** instance (local on port 27017 or cloud Atlas)
-- **Docker** (for running RabbitMQ)
+- **RabbitMQ** (required for real-time features; defaults to in-memory fallback without it)
 
 ---
 
@@ -147,28 +148,30 @@ myenab/
    pip install -r requirements.txt
    ```
 
-4. **Create a `.env` file** in the `backend/` directory (see [Environment Variables](#environment-variables)):
+4. **Create a `.env` file** in the `backend/` directory:
    ```env
    MONGO_URL=mongodb://localhost:27017
    DB_NAME=disability_inclusion_connect
    JWT_SECRET=your-secret-key-here
    CORS_ORIGINS=http://localhost:3000
-   RESEND_API_KEY=re_your_api_key
-   MAIL_FROM=onboarding@resend.dev
+   RABBITMQ_URL=amqp://guest:guest@localhost/
+   OIDC_ISSUER_URL=https://accounts.google.com
+   OIDC_CLIENT_ID=your-google-client-id
+   OIDC_CLIENT_SECRET=your-google-client-secret
+   FRONTEND_URL=http://localhost:3000
    ```
 
 5. **Start RabbitMQ (using Docker):**
    ```bash
-   docker compose up -d
+   docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
    ```
-   *(Note: The system will fall back to in-memory broadcasting if RabbitMQ is not available)*
 
 6. **Start the server:**
    ```bash
-   python -m uvicorn server:app --reload --port 8001
+   python server.py
    ```
-   The API will be available at `http://localhost:8001`  
-   Interactive docs at `http://localhost:8001/docs`
+   The API will be available at `http://localhost:8000`  
+   Interactive docs at `http://localhost:8000/docs`
 
 ---
 
@@ -183,18 +186,12 @@ myenab/
    ```bash
    npm install --legacy-peer-deps
    ```
-   *(Note: `--legacy-peer-deps` is required for dependency resolution)*
 
 3. **Start the development server:**
    ```bash
    npm start
    ```
    The app will open at `http://localhost:3000`
-
-4. **Build for production:**
-   ```bash
-   npm run build
-   ```
 
 ---
 
@@ -207,202 +204,47 @@ myenab/
 | `MONGO_URL` | ✅ | MongoDB connection string |
 | `DB_NAME` | ✅ | Database name |
 | `JWT_SECRET` | ✅ | Secret key for signing JWT tokens |
-| `CORS_ORIGINS` | ❌ | Comma-separated allowed origins (default: `*`) |
-| `RESEND_API_KEY` | ✅ | API Key from Resend for email delivery |
-| `MAIL_FROM` | ✅ | Sender email address for system emails |
-
----
-
-## API Reference
-
-All API routes are prefixed with `/api`.
-
-### Authentication
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `POST` | `/api/auth/register` | ❌ | Register a new user |
-| `GET` | `/api/auth/verify-email` | ❌ | Verify email via 24h token |
-| `POST` | `/api/auth/login` | ❌ | Login and receive JWT token |
-| `GET` | `/api/auth/sso/login` | ❌ | Initiate Google SSO login |
-| `GET` | `/api/auth/sso/callback` | ❌ | Handle SSO callback and setup session |
-| `GET` | `/api/auth/me` | ✅ | Get current user profile |
-| `PUT` | `/api/auth/me` | ✅ | Update current user profile |
-| `POST` | `/api/auth/forgot-password` | ❌ | Request a password reset link |
-| `POST` | `/api/auth/reset-password` | ❌ | Reset password using a valid token |
-
-### Users
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET` | `/api/users` | ❌ | List users (filter by type, disability, location) |
-| `GET` | `/api/users/{id}` | ❌ | Get a single user |
-
-### Forums
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET` | `/api/forums` | ❌ | List all posts (filter by category, tag, search) |
-| `POST` | `/api/forums` | ✅ | Create a new forum post |
-| `GET` | `/api/forums/{id}` | ❌ | Get a single post |
-| `POST` | `/api/forums/{id}/like` | ✅ | Toggle like on a post |
-| `GET` | `/api/forums/{id}/comments` | ❌ | List comments on a post |
-| `POST` | `/api/forums/{id}/comments` | ✅ | Add a comment |
-
-### Service Directory
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET` | `/api/providers` | ❌ | List providers (filter by service, focus, location, search) |
-| `POST` | `/api/providers` | ✅ | Register a new service provider |
-| `GET` | `/api/providers/{id}` | ❌ | Get a single provider |
-
-### Events
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET` | `/api/events` | ❌ | List events (filter by type, virtual, location) |
-| `POST` | `/api/events` | ✅ | Create a new event |
-| `GET` | `/api/events/{id}` | ❌ | Get a single event |
-| `POST` | `/api/events/{id}/attend` | ✅ | Toggle attendance on an event |
-
-### Messages
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET` | `/api/messages/conversations` | ✅ | List all conversations |
-| `GET` | `/api/messages/{user_id}` | ✅ | Get messages with a specific user |
-| `POST` | `/api/messages` | ✅ | Send a message |
-
-### Resources
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET` | `/api/resources` | ❌ | List resources (filter by category, tag, search) |
-| `POST` | `/api/resources` | ✅ | Create a new resource |
-| `GET` | `/api/resources/{id}` | ❌ | Get a single resource (increments view count) |
-
-### Stats
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET` | `/api/stats` | ❌ | Platform-wide statistics (users, providers, events, etc.) |
-| | | | |
-| **Connections** | | | |
-| `POST` | `/api/connections/request/{user_id}` | ✅ | Send a connection request |
-| `PUT` | `/api/connections/respond/{id}` | ✅ | Accept/Decline a connection request |
-| `GET` | `/api/connections/pending` | ✅ | List incoming pending requests |
-| `GET` | `/api/connections` | ✅ | List accepted connections |
-| `GET` | `/api/connections/status/{id}` | ✅ | Get connection status with a user |
-
----
-
-## Pages & Routes
-
-| Route | Auth Required | Page |
-|---|---|---|
-| `/` | ❌ | Landing page (public home) |
-| `/login` | ❌ | Login form |
-| `/register` | ❌ | Registration form with user type & disability categories |
-| `/verify-email` | ❌ | Email verification status page |
-| `/sso-callback` | ❌ | Processing page for SSO logins |
-| `/onboarding` | ✅ | Mandatory post-SSO profile completion |
-| `/dashboard` | ✅ | Personalised dashboard |
-| `/forums` | ✅ | Forum listing |
-| `/forums/:postId` | ✅ | Single forum post with comments |
-| `/directory` | ✅ | Service provider directory |
-| `/events` | ✅ | Events listing and management |
-| `/resources` | ✅ | Resource library |
-| `/messages` | ✅ | Private messaging inbox |
-| `/community` | ✅ | Community overview |
-| `/profile` | ✅ | User profile and settings |
-| `/accessibility` | ❌ | Accessibility commitment and reporting |
-
-> Public routes redirect authenticated users to `/dashboard`. Protected routes redirect unauthenticated users to `/login`.
-
----
-
-## Authentication
-
-The application uses **JWT (JSON Web Tokens)** for authentication:
-
-- Tokens are issued on **login** and **SSO**, valid for **24 hours**.
-- The token must be sent in the `Authorization` header as a `Bearer` token for protected routes.
-- The frontend stores the token and manages auth state via `AuthContext`.
-- **Email Verification**: New accounts created via form registration must verify their email within 24 hours before they can log in.
-- **SSO Onboarding**: Users logging in via SSO for the first time must complete their profile (user type, location) before accessing protected routes.
-- User types: `individual_disabled`, `volunteer`, `service_provider`, `ngo`, `caregiver`
-- Disability categories: `physical`, `cognitive`, `invisible`, `psychiatric`, `sensory`, `multiple`, `prefer_not_to_say`
+| `RABBITMQ_PRIVATE_URL` | ✅ (Prod) | Internal RabbitMQ URL (e.g., `amqp://...internal`) |
+| `OIDC_ISSUER_URL` | ✅ | Google/OIDC Issuer URL |
+| `OIDC_CLIENT_ID` | ✅ | Google Cloud OAuth Client ID |
+| `OIDC_CLIENT_SECRET` | ✅ | Google Cloud OAuth Client Secret |
+| `FRONTEND_URL` | ✅ | Public URL of the frontend for SSO redirects |
+| `ENVIRONMENT` | ❌ | Set to `production` for secure cookie handling |
 
 ---
 
 ## Deploying on Railway
 
-The project deploys as **3 Railway services**: **Backend** (FastAPI), **Frontend** (React static), and **MongoDB** (plugin).
+### Step 1 — Infrastructure
+1. **MongoDB**: Add the MongoDB Plugin.
+2. **RabbitMQ**: Add a RabbitMQ service. 
+   - **Crucial**: Use the **Private Hostname** (e.g., `rabbitmq.railway.internal`) for the connection string. Public domains like `.up.railway.app` will fail for AMQP traffic.
 
-> All necessary Railway config files (`Procfile`, `nixpacks.toml`) are already included in the repository.
+### Step 2 — Backend Configuration
+1. Set `Root Directory` to `backend`.
+2. Add variables:
+   - `JWT_SECRET`: Random string.
+   - `RABBITMQ_PRIVATE_URL`: Your RabbitMQ internal URL.
+   - `FRONTEND_URL`: Your frontend domain.
+   - `OIDC_...`: Your Google credentials.
+   - `ENVIRONMENT`: `production`.
 
----
-
-### Step 1 — Create a Railway Project
-
-1. Go to [railway.app](https://railway.app) and sign in.
-2. Click **New Project → Empty Project**.
-
----
-
-### Step 2 — Add MongoDB
-
-1. In your project, click **+ New → Database → Add MongoDB**.
-2. Railway will provision a MongoDB instance and expose a `MONGO_URL` variable — this is automatically injected into any service in the same project.
-
----
-
-### Step 3 — Deploy the Backend
-
-1. Click **+ New → GitHub Repo**, select your repository, and set the **Root Directory** to `backend`.
-2. Railway will detect `nixpacks.toml` and build automatically.
-3. Once deployed, go to **Settings → Networking → Generate Domain** to get the backend public URL (e.g. `https://backend-xxx.railway.app`).
-4. Under **Variables**, add:
-
-| Variable | Value |
-|---|---|
-| `DB_NAME` | `disability_inclusion_connect` |
-| `JWT_SECRET` | A long random string (e.g. run `openssl rand -hex 32`) |
-| `CORS_ORIGINS` | *(set this after your frontend URL is known — see Step 4)* |
-
-> `MONGO_URL` and `PORT` are automatically provided by Railway — do **not** add them manually.
+### Step 3 — Frontend Configuration
+1. Set `Root Directory` to `frontend`.
+2. Add variable:
+   - `REACT_APP_BACKEND_URL`: Your backend domain (no trailing slash).
+   - **Note**: The frontend uses `config.js` to automatically determine the WebSocket (`ws/wss`) URL based on this API URL.
 
 ---
 
-### Step 4 — Deploy the Frontend
+## Real-time Messaging & Presence
 
-1. Click **+ New → GitHub Repo**, select the **same repository**, and set **Root Directory** to `frontend`.
-2. **Before the first deploy**, go to **Variables** and add:
+The platform uses a **WebSocket + RabbitMQ** architecture to ensure messages are delivered instantly even across multiple server instances.
 
-| Variable | Value |
-|---|---|
-| `REACT_APP_BACKEND_URL` | The backend public URL from Step 3 (no trailing slash) |
-
-> ⚠️ **This must be set before the build runs.** React bakes env vars into the static bundle at build time. If you forget, set the variable and trigger a manual redeploy.
-
-3. Once deployed, generate a domain for the frontend too (e.g. `https://frontend-xxx.railway.app`).
-
----
-
-### Step 5 — Update CORS on the Backend
-
-Now that you know the frontend URL, go back to the **backend service → Variables** and set:
-
-```
-CORS_ORIGINS=https://frontend-xxx.railway.app
-```
-
-Then **redeploy the backend** (Railway → Deployments → Redeploy).
-
----
-
-### Step 6 — Verify
-
-| Check | Expected result |
-|---|---|
-| `GET https://<backend>/api/` | `{"message": "MyEnAb API v1", "status": "healthy"}` |
-| `https://<backend>/docs` | FastAPI Swagger UI loads |
-| `https://<frontend>/` | Landing page loads |
-| Register + Login | Redirects to dashboard; JWT stored in localStorage |
-| No CORS errors | DevTools → Network: no red CORS failures on API requests |
+- **Status Dots**: Users show a green dot when they have an active WebSocket connection.
+- **Typing Indicators**: Real-time feedback when a connection partner is typing.
+- **Accepted Connections Only**: You can only message users with whom you have an "Accepted" connection status.
+- **Production Routing**: The app automatically switches to `wss://` on production for secure, encrypted real-time communication.
 
 ---
 

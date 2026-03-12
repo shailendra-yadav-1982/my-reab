@@ -30,6 +30,7 @@ export default function Messages() {
     const [typingUsers, setTypingUsers] = useState({}); // senderId -> boolean
     const typingTimeoutRef = useRef({});
     const selectedUserRef = useRef(null);
+    const messagesEndRef = useRef(null);
 
     // Keep ref in sync
     useEffect(() => {
@@ -142,6 +143,15 @@ export default function Messages() {
             fetchMessages(selectedUser.user_id || selectedUser.id);
         }
     }, [selectedUser]);
+    
+    // Auto-scroll on new messages
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
 
 
     const fetchConversations = async () => {
@@ -401,6 +411,7 @@ export default function Messages() {
                                                 </div>
                                             );
                                         })}
+                                        <div ref={messagesEndRef} />
                                     </div>
                                 </ScrollArea>
 
