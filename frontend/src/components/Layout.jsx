@@ -46,11 +46,6 @@ export const Layout = ({ children }) => {
 
     return (
         <div className="min-h-screen bg-[#121212]">
-            {/* Skip Link for Accessibility */}
-            <a href="#main-content" className="skip-link" data-testid="skip-link">
-                Skip to main content
-            </a>
-
             {/* Navigation */}
             <nav className="sticky top-0 z-50 border-t-0 border-b border-[#27272A] bg-[#121212]/95 backdrop-blur-sm" role="navigation" aria-label="Main navigation">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
