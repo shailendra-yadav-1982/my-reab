@@ -10,9 +10,10 @@ async def get_users(
     user_type: Optional[str] = None,
     disability_category: Optional[str] = None,
     location: Optional[str] = None,
+    search: Optional[str] = None,
     limit: int = 50
 ):
-    return await user_service.get_users(user_type, disability_category, location, limit)
+    return await user_service.get_users(user_type, disability_category, location, search, limit)
 
 @router.get("/{user_id}", response_model=UserResponse)
 async def get_user(user_id: str):

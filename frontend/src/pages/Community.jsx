@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
 import SEO from '../components/SEO';
 import { Card, CardContent } from '../components/ui/card';
@@ -32,17 +33,14 @@ const disabilityCategories = [
 ];
 
 export default function Community() {
+    const { user } = useAuth();
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedType, setSelectedType] = useState('all');
     const [selectedCategory, setSelectedCategory] = useState('all');
 
-    useEffect(() => {
-        fetchMembers();
-    }, [selectedType, selectedCategory]);
-
-    const fetchMembers = async () => {
+    const fetchMembers = useCallback(async () => {
         setLoading(true);
         try {
             const params = new URLSearchParams();
@@ -61,9 +59,16 @@ export default function Community() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [selectedType, selectedCategory]);
+
+    useEffect(() => {
+        fetchMembers();
+    }, [fetchMembers]);
 
     const filteredMembers = members.filter(member => {
+        // Don't show current user
+        if (user && member.id === user.id) return false;
+        
         const nameMatch = member.name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false;
         const locationMatch = member.location?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false;
         return nameMatch || locationMatch;

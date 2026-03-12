@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Key Features
+- **Real-time Messaging**: Uses WebSockets for instant updates.
+- **Online Presence**: Visual indicators for active users.
+
 ## Available Scripts
 
 In the project directory, you can run:

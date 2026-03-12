@@ -219,10 +219,10 @@ export const Layout = ({ children }) => {
                         <div>
                             <h4 className="font-lexend font-semibold mb-4">Support</h4>
                             <ul className="space-y-2 text-sm text-zinc-400">
-                                <li><a href="#" className="hover:text-white transition-colors">Accessibility</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
+                                <li><Link to="/accessibility" className="hover:text-white transition-colors">Accessibility</Link></li>
+                                <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                                <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                                <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
                             </ul>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
@@ -60,16 +60,13 @@ export default function Events() {
         accessibility_features: []
     });
 
-    useEffect(() => {
-        fetchEvents();
-    }, [selectedType, showVirtualOnly, searchQuery]);
-
-    const fetchEvents = async () => {
+    const fetchEvents = useCallback(async () => {
         setLoading(true);
         try {
             const params = new URLSearchParams();
             if (selectedType && selectedType !== 'all') params.append('event_type', selectedType);
             if (showVirtualOnly) params.append('is_virtual', 'true');
+            if (searchQuery) params.append('search', searchQuery);
             params.append('upcoming', 'true');
 
             const response = await axios.get(`${API}/events?${params.toString()}`);
@@ -79,7 +76,11 @@ export default function Events() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [selectedType, showVirtualOnly, searchQuery]);
+
+    useEffect(() => {
+        fetchEvents();
+    }, [fetchEvents]);
 
     const handleFeatureToggle = (feature) => {
         setNewEvent(prev => ({
@@ -161,142 +162,144 @@ export default function Events() {
                         <h1 className="font-lexend text-3xl font-bold mb-2">Events & Meetups</h1>
                         <p className="text-zinc-400">Discover accessible events from the disability community</p>
                     </div>
-                    <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                        <DialogTrigger asChild>
-                            <Button className="btn-primary" data-testid="create-event-btn">
-                                <Plus className="w-4 h-4 mr-2" />
-                                Create Event
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="bg-[#18181B] border-[#27272A] max-w-2xl max-h-[90vh] overflow-y-auto">
-                            <DialogHeader>
-                                <DialogTitle className="font-lexend text-xl">Create New Event</DialogTitle>
-                            </DialogHeader>
-                            <form onSubmit={handleCreateEvent} className="space-y-4 mt-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="title">Event Title *</Label>
-                                    <Input
-                                        id="title"
-                                        value={newEvent.title}
-                                        onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-                                        required
-                                        className="input-dark"
-                                        data-testid="event-title-input"
-                                    />
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label>Event Type</Label>
-                                        <Select
-                                            value={newEvent.event_type}
-                                            onValueChange={(value) => setNewEvent({ ...newEvent, event_type: value })}
-                                        >
-                                            <SelectTrigger className="input-dark" data-testid="event-type-select">
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent className="bg-[#18181B] border-[#27272A]">
-                                                {eventTypes.map(type => (
-                                                    <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>Date & Time *</Label>
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <Button variant="outline" className="w-full input-dark justify-start text-left font-normal" data-testid="event-date-picker">
-                                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                                    {startDate ? format(startDate, 'PPP') : 'Pick a date'}
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0 bg-[#18181B] border-[#27272A]">
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={startDate}
-                                                    onSelect={setStartDate}
-                                                    disabled={(date) => date < new Date()}
-                                                    initialFocus
-                                                />
-                                            </PopoverContent>
-                                        </Popover>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="description">Description *</Label>
-                                    <Textarea
-                                        id="description"
-                                        value={newEvent.description}
-                                        onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
-                                        required
-                                        rows={4}
-                                        className="input-dark resize-none"
-                                        data-testid="event-description-input"
-                                    />
-                                </div>
-                                <div className="flex items-center space-x-4 p-4 bg-[#121212] rounded-lg">
-                                    <Switch
-                                        id="is_virtual"
-                                        checked={newEvent.is_virtual}
-                                        onCheckedChange={(checked) => setNewEvent({ ...newEvent, is_virtual: checked })}
-                                        data-testid="event-virtual-switch"
-                                    />
-                                    <Label htmlFor="is_virtual" className="flex items-center gap-2 cursor-pointer">
-                                        <Video className="w-4 h-4" />
-                                        This is a virtual event
-                                    </Label>
-                                </div>
-                                {newEvent.is_virtual ? (
-                                    <div className="space-y-2">
-                                        <Label htmlFor="virtual_link">Virtual Meeting Link</Label>
-                                        <Input
-                                            id="virtual_link"
-                                            value={newEvent.virtual_link}
-                                            onChange={(e) => setNewEvent({ ...newEvent, virtual_link: e.target.value })}
-                                            placeholder="https://zoom.us/..."
-                                            className="input-dark"
-                                            data-testid="event-virtual-link"
-                                        />
-                                    </div>
-                                ) : (
-                                    <div className="space-y-2">
-                                        <Label htmlFor="location">Location *</Label>
-                                        <Input
-                                            id="location"
-                                            value={newEvent.location}
-                                            onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
-                                            required={!newEvent.is_virtual}
-                                            placeholder="Venue address"
-                                            className="input-dark"
-                                            data-testid="event-location-input"
-                                        />
-                                    </div>
-                                )}
-                                <div className="space-y-3">
-                                    <Label>Accessibility Features</Label>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                        {accessibilityFeatures.map(feature => (
-                                            <button
-                                                key={feature}
-                                                type="button"
-                                                onClick={() => handleFeatureToggle(feature)}
-                                                className={`px-3 py-2 rounded-lg text-sm text-left transition-colors ${newEvent.accessibility_features.includes(feature)
-                                                    ? 'bg-inclusion-green/20 text-inclusion-green border border-inclusion-green/30'
-                                                    : 'bg-[#27272A] text-zinc-300 border border-transparent hover:border-white/20'
-                                                    }`}
-                                                data-testid={`accessibility-${feature.toLowerCase().replace(/ /g, '-')}`}
-                                            >
-                                                {feature}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                                <Button type="submit" className="w-full btn-primary" disabled={creating} data-testid="submit-event-btn">
-                                    {creating ? 'Creating...' : 'Create Event'}
+                    {['ngo', 'volunteer', 'service_provider'].includes(user?.user_type) && (
+                        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                            <DialogTrigger asChild>
+                                <Button className="btn-primary" data-testid="create-event-btn">
+                                    <Plus className="w-4 h-4 mr-2" />
+                                    Create Event
                                 </Button>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
+                            </DialogTrigger>
+                            <DialogContent className="bg-[#18181B] border-[#27272A] max-w-2xl max-h-[90vh] overflow-y-auto">
+                                <DialogHeader>
+                                    <DialogTitle className="font-lexend text-xl">Create New Event</DialogTitle>
+                                </DialogHeader>
+                                <form onSubmit={handleCreateEvent} className="space-y-4 mt-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="title">Event Title *</Label>
+                                        <Input
+                                            id="title"
+                                            value={newEvent.title}
+                                            onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                                            required
+                                            className="input-dark"
+                                            data-testid="event-title-input"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label>Event Type</Label>
+                                            <Select
+                                                value={newEvent.event_type}
+                                                onValueChange={(value) => setNewEvent({ ...newEvent, event_type: value })}
+                                            >
+                                                <SelectTrigger className="input-dark" data-testid="event-type-select">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent className="bg-[#18181B] border-[#27272A]">
+                                                    {eventTypes.map(type => (
+                                                        <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Date & Time *</Label>
+                                            <Popover>
+                                                <PopoverTrigger asChild>
+                                                    <Button variant="outline" className="w-full input-dark justify-start text-left font-normal" data-testid="event-date-picker">
+                                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                                        {startDate ? format(startDate, 'PPP') : 'Pick a date'}
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto p-0 bg-[#18181B] border-[#27272A]">
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={startDate}
+                                                        onSelect={setStartDate}
+                                                        disabled={(date) => date < new Date()}
+                                                        initialFocus
+                                                    />
+                                                </PopoverContent>
+                                            </Popover>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="description">Description *</Label>
+                                        <Textarea
+                                            id="description"
+                                            value={newEvent.description}
+                                            onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+                                            required
+                                            rows={4}
+                                            className="input-dark resize-none"
+                                            data-testid="event-description-input"
+                                        />
+                                    </div>
+                                    <div className="flex items-center space-x-4 p-4 bg-[#121212] rounded-lg">
+                                        <Switch
+                                            id="is_virtual"
+                                            checked={newEvent.is_virtual}
+                                            onCheckedChange={(checked) => setNewEvent({ ...newEvent, is_virtual: checked })}
+                                            data-testid="event-virtual-switch"
+                                        />
+                                        <Label htmlFor="is_virtual" className="flex items-center gap-2 cursor-pointer">
+                                            <Video className="w-4 h-4" />
+                                            This is a virtual event
+                                        </Label>
+                                    </div>
+                                    {newEvent.is_virtual ? (
+                                        <div className="space-y-2">
+                                            <Label htmlFor="virtual_link">Virtual Meeting Link</Label>
+                                            <Input
+                                                id="virtual_link"
+                                                value={newEvent.virtual_link}
+                                                onChange={(e) => setNewEvent({ ...newEvent, virtual_link: e.target.value })}
+                                                placeholder="https://zoom.us/..."
+                                                className="input-dark"
+                                                data-testid="event-virtual-link"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            <Label htmlFor="location">Location *</Label>
+                                            <Input
+                                                id="location"
+                                                value={newEvent.location}
+                                                onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
+                                                required={!newEvent.is_virtual}
+                                                placeholder="Venue address"
+                                                className="input-dark"
+                                                data-testid="event-location-input"
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="space-y-3">
+                                        <Label>Accessibility Features</Label>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                            {accessibilityFeatures.map(feature => (
+                                                <button
+                                                    key={feature}
+                                                    type="button"
+                                                    onClick={() => handleFeatureToggle(feature)}
+                                                    className={`px-3 py-2 rounded-lg text-sm text-left transition-colors ${newEvent.accessibility_features.includes(feature)
+                                                        ? 'bg-inclusion-green/20 text-inclusion-green border border-inclusion-green/30'
+                                                        : 'bg-[#27272A] text-zinc-300 border border-transparent hover:border-white/20'
+                                                        }`}
+                                                    data-testid={`accessibility-${feature.toLowerCase().replace(/ /g, '-')}`}
+                                                >
+                                                    {feature}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <Button type="submit" className="w-full btn-primary" disabled={creating} data-testid="submit-event-btn">
+                                        {creating ? 'Creating...' : 'Create Event'}
+                                    </Button>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                    )}
                 </div>
 
                 {/* Filters */}
@@ -409,9 +412,11 @@ export default function Events() {
                             <CalendarIcon className="w-16 h-16 mx-auto mb-4 text-zinc-600" />
                             <h3 className="font-lexend text-xl mb-2">No events found</h3>
                             <p className="text-zinc-500 mb-4">Be the first to organize an accessible event!</p>
-                            <Button onClick={() => setIsCreateOpen(true)} className="btn-primary" data-testid="empty-create-event-btn">
-                                Create Event
-                            </Button>
+                            {['ngo', 'volunteer', 'service_provider'].includes(user?.user_type) && (
+                                <Button onClick={() => setIsCreateOpen(true)} className="btn-primary" data-testid="empty-create-event-btn">
+                                    Create Event
+                                </Button>
+                            )}
                         </div>
                     )}
                 </div>

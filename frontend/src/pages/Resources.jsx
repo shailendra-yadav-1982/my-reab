@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
@@ -42,11 +42,7 @@ export default function Resources() {
         tags: ''
     });
 
-    useEffect(() => {
-        fetchResources();
-    }, [selectedCategory, searchQuery]);
-
-    const fetchResources = async () => {
+    const fetchResources = useCallback(async () => {
         setLoading(true);
         try {
             const params = new URLSearchParams();
@@ -60,7 +56,11 @@ export default function Resources() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [selectedCategory, searchQuery]);
+
+    useEffect(() => {
+        fetchResources();
+    }, [fetchResources]);
 
     const handleCreateResource = async (e) => {
         e.preventDefault();
@@ -327,9 +327,6 @@ export default function Resources() {
                             <BookOpen className="w-16 h-16 mx-auto mb-4 text-zinc-600" />
                             <h3 className="font-lexend text-xl mb-2">No resources found</h3>
                             <p className="text-zinc-500 mb-4">Be the first to share a helpful resource!</p>
-                            <Button onClick={() => setIsCreateOpen(true)} className="btn-primary" data-testid="empty-add-resource-btn">
-                                Add Resource
-                            </Button>
                         </div>
                     )}
                 </div>

@@ -6,6 +6,7 @@ async def get_users(
     user_type: Optional[str] = None,
     disability_category: Optional[str] = None,
     location: Optional[str] = None,
+    search: Optional[str] = None,
     limit: int = 50
 ):
     from app.core.config import logger
@@ -16,6 +17,8 @@ async def get_users(
         query["disability_categories"] = disability_category
     if location:
         query["location"] = {"$regex": location, "$options": "i"}
+    if search:
+        query["name"] = {"$regex": search, "$options": "i"}
     
     logger.info(f"Fetching users with query: {query}")
     

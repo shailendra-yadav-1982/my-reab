@@ -21,6 +21,10 @@ def get_env_required(name: str) -> str:
         raise RuntimeError(f"ENVIRONMENT ERROR: '{name}' is required but not set.")
     return val
 
+# Database & RabbitMQ
+MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+RABBIT_URL = os.environ.get('RABBITMQ_URL', os.environ.get('RABBIT_URL', 'amqp://guest:guest@localhost/'))
+
 # JWT Configuration
 JWT_SECRET = os.environ.get('JWT_SECRET', 'temp-secret-change-me-in-production')
 JWT_ALGORITHM = "HS256"

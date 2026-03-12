@@ -21,6 +21,10 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail";
 import Onboarding from "./pages/Onboarding";
+import Privacy from "./pages/Privacy";
+import TermsOfService from "./pages/TermsOfService";
+import ContactUs from "./pages/ContactUs";
+import Accessibility from "./pages/Accessibility";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -78,11 +82,16 @@ function AppRoutes() {
             <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
             <Route path="/sso-callback" element={<PublicRoute><SSOCallback /></PublicRoute>} />
             <Route path="/verify-email" element={<PublicRoute><VerifyEmail /></PublicRoute>} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/accessibility" element={<Accessibility />} />
 
             {/* Protected Routes */}
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/forums" element={<ProtectedRoute><Forums /></ProtectedRoute>} />
+            <Route path="/forums/new" element={<ProtectedRoute><Forums /></ProtectedRoute>} />
             <Route path="/forums/:postId" element={<ProtectedRoute><ForumPost /></ProtectedRoute>} />
             <Route path="/directory" element={<ProtectedRoute><Directory /></ProtectedRoute>} />
             <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />

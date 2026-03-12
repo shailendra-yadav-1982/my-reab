@@ -36,6 +36,11 @@ app.add_middleware(
 # Include API Router
 app.include_router(api_router, prefix="/api")
 
+@app.on_event("startup")
+async def startup_event():
+    from app.core.websocket import manager
+    await manager.init_rabbitmq()
+
 @app.get("/")
 @app.get("/health")
 async def root():

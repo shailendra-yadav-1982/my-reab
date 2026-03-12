@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
@@ -46,13 +46,27 @@ export default function Dashboard() {
         }
     };
 
+    const organizingRoles = ['ngo', 'volunteer', 'service_provider'];
+    const providerRoles = ['ngo', 'service_provider'];
+
     const quickLinks = [
-        { path: '/forums', label: 'Browse Forums', icon: MessageSquare, color: '#FFD700' },
-        { path: '/directory', label: 'Find Services', icon: Building2, color: '#38BDF8' },
-        { path: '/events', label: 'View Events', icon: Calendar, color: '#34D399' },
-        { path: '/resources', label: 'Resources', icon: BookOpen, color: '#FF5C5C' },
-        { path: '/community', label: 'Community', icon: Users, color: '#F4F4F5' }
-    ];
+        { path: '/forums/new', label: 'Start Discussion', icon: MessageSquare, color: '#38BDF8', show: true },
+        { 
+            path: '/events', 
+            label: 'Create Event', 
+            icon: Calendar, 
+            color: '#34D399', 
+            show: organizingRoles.includes(user?.user_type) 
+        },
+        { 
+            path: '/directory', 
+            label: 'Register Provider', 
+            icon: Building2, 
+            color: '#FFD700', 
+            show: providerRoles.includes(user?.user_type) 
+        },
+        { path: '/resources', label: 'Browse Resources', icon: BookOpen, color: '#FF5C5C', show: true }
+    ].filter(link => link.show);
 
     return (
         <Layout>
@@ -80,30 +94,33 @@ export default function Dashboard() {
 
                 <PendingRequests />
 
-                {/* Quick Links */}
-                <div className="mb-8" data-testid="quick-links">
-                    <h2 className="font-lexend text-xl font-semibold mb-4">Quick Actions</h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                        {quickLinks.map((link) => {
-                            const Icon = link.icon;
-                            return (
-                                <Link key={link.path} to={link.path}>
-                                    <Card className="bg-[#18181B] border-[#27272A] hover:border-white/20 transition-all cursor-pointer group" data-testid={`quick-link-${link.label.toLowerCase().replace(' ', '-')}`}>
-                                        <CardContent className="p-4 text-center">
-                                            <div
-                                                className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center transition-transform group-hover:scale-110"
-                                                style={{ backgroundColor: `${link.color}20` }}
-                                            >
-                                                <Icon className="w-6 h-6" style={{ color: link.color }} />
-                                            </div>
-                                            <span className="text-sm font-medium">{link.label}</span>
-                                        </CardContent>
-                                    </Card>
-                                </Link>
-                            );
-                        })}
+                {/* Quick Actions */}
+                {quickLinks.length > 0 && (
+                    <div className="mb-8" data-testid="quick-links">
+                        <h2 className="font-lexend text-xl font-semibold mb-4">Quick Actions</h2>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {quickLinks.map((link) => {
+                                const Icon = link.icon;
+                                return (
+                                    <Link key={link.path} to={link.path}>
+                                        <Card className="bg-[#18181B] border-[#27272A] hover:border-white/20 transition-all cursor-pointer group" data-testid={`quick-link-${link.label.toLowerCase().replace(' ', '-')}`}>
+                                            <CardContent className="p-4 text-center">
+                                                <div
+                                                    className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center transition-transform group-hover:scale-110"
+                                                    style={{ backgroundColor: `${link.color}20` }}
+                                                >
+                                                    <Icon className="w-6 h-6" style={{ color: link.color }} />
+                                                </div>
+                                                <span className="text-sm font-medium">{link.label}</span>
+                                            </CardContent>
+                                        </Card>
+                                    </Link>
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
+                )}
+
 
                 {/* Main Content Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -191,9 +208,11 @@ export default function Dashboard() {
                                     <Calendar className="w-12 h-12 mx-auto mb-3 opacity-50" />
                                     <p>No upcoming events</p>
                                     <Link to="/events">
-                                        <Button variant="link" className="text-inclusion-blue mt-2">
-                                            Create an event
-                                        </Button>
+                                        {['ngo', 'volunteer', 'service_provider'].includes(user?.user_type) && (
+                                            <Button variant="link" className="text-inclusion-blue mt-2" data-testid="empty-create-event-btn">
+                                                Create an event
+                                            </Button>
+                                        )}
                                     </Link>
                                 </div>
                             )}

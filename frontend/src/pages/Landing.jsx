@@ -83,18 +83,18 @@ export default function Landing() {
             try {
                 // Record the visit first
                 await axios.post(`${API_URL}/stats/visit`).catch(e => console.error('Error recording visit:', e));
-                
+
                 const response = await axios.get(`${API_URL}/stats`);
                 const data = response.data;
-                
+
                 // Map backend data to landing page stats
                 const updatedStats = initialStats.map(stat => ({
                     ...stat,
-                    value: data[stat.key] !== undefined 
+                    value: data[stat.key] !== undefined
                         ? (data[stat.key]).toLocaleString() + (data[stat.key] >= 1000 ? '+' : '')
                         : stat.value
                 }));
-                
+
                 setAppStats(updatedStats);
             } catch (error) {
                 console.error('Error fetching stats:', error);
@@ -123,7 +123,7 @@ export default function Landing() {
                         </div>
 
                         <h1 className="font-lexend text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-                            Connect. Support.
+                            Connect. Support. Enable.
                             <span className="block mt-2 bg-gradient-to-r from-[#E40303] via-[#FF8C00] via-[#FFD700] via-[#008026] via-[#24408E] to-[#732982] bg-clip-text text-transparent">
                                 MyEnAb
                             </span>
@@ -221,10 +221,10 @@ export default function Landing() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <h2 className="font-lexend text-3xl md:text-4xl font-bold mb-4">
-                            The Disability Inclusion Flag
+                            The Disability Pride Flag
                         </h2>
                         <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-                            The Disability Inclusion Flag symbolizes the diverse experiences of our community.
+                            The Disability Pride Flag symbolizes the diverse experiences of our community.
                             Designed by Ann Magill, each color represents a specific aspect of disability identity,
                             set against a charcoal background that honors our shared history and resilience.
                         </p>

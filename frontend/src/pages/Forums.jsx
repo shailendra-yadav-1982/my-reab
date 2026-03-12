@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
@@ -29,6 +29,7 @@ const categories = [
 
 export default function Forums() {
     const { user } = useAuth();
+    const location = useLocation();
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -37,11 +38,7 @@ export default function Forums() {
     const [newPost, setNewPost] = useState({ title: '', content: '', category: 'general', tags: '' });
     const [creating, setCreating] = useState(false);
 
-    useEffect(() => {
-        fetchPosts();
-    }, [selectedCategory, searchQuery]);
-
-    const fetchPosts = async () => {
+    const fetchPosts = useCallback(async () => {
         setLoading(true);
         try {
             const params = new URLSearchParams();
@@ -55,7 +52,14 @@ export default function Forums() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [selectedCategory, searchQuery]);
+
+    useEffect(() => {
+        fetchPosts();
+        if (location.pathname === '/forums/new' || location.search.includes('create=true')) {
+            setIsCreateOpen(true);
+        }
+    }, [fetchPosts, location]);
 
     const handleCreatePost = async (e) => {
         e.preventDefault();

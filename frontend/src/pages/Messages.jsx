@@ -24,6 +24,107 @@ export default function Messages() {
     const [searchResults, setSearchResults] = useState([]);
     const messagesEndRef = useRef(null);
 
+    const [ws, setWs] = useState(null);
+    const [onlineUsers, setOnlineUsers] = useState(new Set());
+    const [typingUsers, setTypingUsers] = useState({}); // senderId -> boolean
+    const typingTimeoutRef = useRef({});
+    const selectedUserRef = useRef(null);
+
+    // Keep ref in sync
+    useEffect(() => {
+        selectedUserRef.current = selectedUser;
+    }, [selectedUser]);
+
+    useEffect(() => {
+        if (!user?.id) return;
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsHost = process.env.NODE_ENV === 'production' 
+            ? window.location.host 
+            : 'localhost:8000';
+            
+        const socket = new WebSocket(`${protocol}//${wsHost}/api/ws/${user.id}`);
+
+        socket.onopen = () => {
+            console.log('WebSocket Connected');
+        };
+
+        socket.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                console.log('WS Event Received:', data);
+                
+                if (data.type === 'initial_presence') {
+                    setOnlineUsers(new Set(data.online_users.map(id => String(id))));
+                } else if (data.type === 'new_message') {
+                    const msg = data.message;
+                    const currentSelected = selectedUserRef.current;
+                    const contactId = currentSelected?.id || currentSelected?.user_id;
+                    
+                    if (contactId && String(msg.sender_id) === String(contactId)) {
+                        setMessages(prev => [...prev, msg]);
+                    }
+                    fetchConversations();
+                } else if (data.type === 'presence') {
+                    setOnlineUsers(prev => {
+                        const next = new Set(prev);
+                        const uid = String(data.user_id);
+                        if (data.status === 'online') next.add(uid);
+                        else next.delete(uid);
+                        return next;
+                    });
+                } else if (data.type === 'typing') {
+                    setTypingUsers(prev => ({
+                        ...prev,
+                        [String(data.sender_id)]: data.is_typing
+                    }));
+                }
+            } catch (err) {
+                console.error('Error parsing WS message:', err);
+            }
+        };
+
+        socket.onclose = () => {
+            console.log('WebSocket Disconnected');
+        };
+
+        setWs(socket);
+        return () => {
+            console.log('Cleaning up WebSocket');
+            socket.close();
+        };
+    }, [user?.id]);
+
+    const handleTyping = (e) => {
+        const value = e.target.value;
+        setNewMessage(value);
+
+        if (!ws || !selectedUser) return;
+
+        const recipientId = selectedUser.id || selectedUser.user_id;
+
+        // Emit typing: true
+        ws.send(JSON.stringify({
+            type: 'typing',
+            recipient_id: recipientId,
+            is_typing: true
+        }));
+
+        // Clear existing timeout
+        if (typingTimeoutRef.current[recipientId]) {
+            clearTimeout(typingTimeoutRef.current[recipientId]);
+        }
+
+        // Set timeout to emit typing: false
+        typingTimeoutRef.current[recipientId] = setTimeout(() => {
+            ws.send(JSON.stringify({
+                type: 'typing',
+                recipient_id: recipientId,
+                is_typing: false
+            }));
+            delete typingTimeoutRef.current[recipientId];
+        }, 3000);
+    };
+
     useEffect(() => {
         fetchConversations();
     }, []);
@@ -64,16 +165,14 @@ export default function Messages() {
 
     const handleSearch = async (query) => {
         setSearchQuery(query);
-        if (query.length < 2) {
+        if (query.trim().length < 2) {
             setSearchResults([]);
             return;
         }
         try {
-            const response = await axios.get(`${API}/users?limit=10`);
-            const filtered = response.data.filter(u =>
-                u.id !== user.id && u.name.toLowerCase().includes(query.toLowerCase())
-            );
-            setSearchResults(filtered);
+            const response = await axios.get(`${API}/users?search=${encodeURIComponent(query)}&limit=20`);
+            const results = response.data.filter(u => u.id !== user.id);
+            setSearchResults(results);
         } catch (error) {
             console.error('Failed to search users:', error);
         }
@@ -109,7 +208,7 @@ export default function Messages() {
     };
 
     const selectUserFromSearch = (u) => {
-        setSelectedUser({ user_id: u.id, user_name: u.name });
+        setSelectedUser({ id: u.id, name: u.name });
         setSearchQuery('');
         setSearchResults([]);
     };
@@ -146,8 +245,13 @@ export default function Messages() {
                                             className="w-full px-4 py-3 text-left hover:bg-[#27272A] flex items-center gap-3"
                                             data-testid={`search-result-${u.id}`}
                                         >
-                                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-inclusion-gold to-inclusion-green flex items-center justify-center">
-                                                <span className="text-xs font-bold text-black">{u.name?.charAt(0).toUpperCase()}</span>
+                                            <div className="relative">
+                                                <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center font-bold">
+                                                    {u.name?.charAt(0).toUpperCase()}
+                                                </div>
+                                                {onlineUsers.has(String(u.id)) && (
+                                                    <div className="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border-2 border-[#121212]"></div>
+                                                )}
                                             </div>
                                             <span className="text-sm">{u.name}</span>
                                         </button>
@@ -160,28 +264,29 @@ export default function Messages() {
                                 <div className="p-4 text-center text-zinc-500">Loading...</div>
                             ) : conversations.length > 0 ? (
                                 conversations.map((conv) => (
-                                    <button
-                                        key={conv.user_id}
-                                        onClick={() => setSelectedUser(conv)}
-                                        className={`w-full p-4 text-left hover:bg-[#27272A] transition-colors flex items-center gap-3 ${selectedUser?.user_id === conv.user_id ? 'bg-[#27272A]' : ''
-                                            }`}
-                                        data-testid={`conversation-${conv.user_id}`}
+                                    <div 
+                                        key={conv.user_id} 
+                                        onClick={() => setSelectedUser({ id: conv.user_id, name: conv.user_name })}
+                                        className={`p-4 cursor-pointer hover:bg-[#202c33] transition-colors flex items-center gap-3 ${selectedUser?.id === conv.user_id ? 'bg-[#2a3942]' : ''}`}
                                     >
-                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-inclusion-red to-inclusion-gold flex items-center justify-center flex-shrink-0">
-                                            <span className="text-sm font-bold text-black">{conv.user_name?.charAt(0).toUpperCase()}</span>
+                                        <div className="relative">
+                                            <div className="w-12 h-12 rounded-full bg-zinc-700 flex items-center justify-center text-lg font-bold">
+                                                {conv.user_name[0]}
+                                            </div>
+                                            {onlineUsers.has(String(conv.user_id)) && (
+                                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[#111b21]"></div>
+                                            )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-medium truncate">{conv.user_name}</span>
-                                                {conv.unread_count > 0 && (
-                                                    <span className="w-5 h-5 bg-inclusion-blue rounded-full text-xs flex items-center justify-center">
-                                                        {conv.unread_count}
-                                                    </span>
-                                                )}
+                                            <div className="flex justify-between items-baseline">
+                                                <h4 className="font-medium truncate">{conv.user_name}</h4>
+                                                <span className="text-xs text-zinc-500">
+                                                    {conv.last_message_time ? new Date(conv.last_message_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                                                </span>
                                             </div>
                                             <p className="text-sm text-zinc-400 truncate">{conv.last_message}</p>
                                         </div>
-                                    </button>
+                                    </div>
                                 ))
                             ) : (
                                 <div className="p-8 text-center text-zinc-500">
@@ -198,41 +303,57 @@ export default function Messages() {
                         {selectedUser ? (
                             <>
                                 {/* Chat Header */}
-                                <div className="p-4 border-b border-[#27272A] flex items-center gap-3">
+                                <div className="p-4 border-b border-[#27272A] flex items-center gap-3 bg-[#202c33]">
                                     <button
                                         onClick={() => setSelectedUser(null)}
-                                        className="md:hidden p-2 hover:bg-[#27272A] rounded-lg"
-                                        data-testid="back-to-conversations"
+                                        className="md:hidden p-1 hover:bg-[#2a3942] rounded-full transition-colors"
                                     >
-                                        <ArrowLeft className="w-5 h-5" />
+                                        <ArrowLeft className="w-6 h-6" />
                                     </button>
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-inclusion-red to-inclusion-gold flex items-center justify-center">
-                                        <span className="text-sm font-bold text-black">{selectedUser.user_name?.charAt(0).toUpperCase()}</span>
+                                    <div className="relative">
+                                        <div className="w-10 h-10 rounded-full bg-zinc-700 flex items-center justify-center font-bold">
+                                            {(selectedUser.name || selectedUser.user_name)[0]}
+                                        </div>
+                                        {onlineUsers.has(String(selectedUser.id || selectedUser.user_id)) && (
+                                            <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#202c33]"></div>
+                                        )}
                                     </div>
-                                    <span className="font-semibold">{selectedUser.user_name}</span>
+                                    <div>
+                                        <h3 className="font-lexend font-medium">{selectedUser.name || selectedUser.user_name}</h3>
+                                        <p className="text-xs text-zinc-400">
+                                            {typingUsers[String(selectedUser.id || selectedUser.user_id)] 
+                                                ? <span className="text-inclusion-gold animate-pulse">Typing...</span>
+                                                : (onlineUsers.has(String(selectedUser.id || selectedUser.user_id)) ? 'Online' : 'Active conversation')
+                                            }
+                                        </p>
+                                    </div>
                                 </div>
-
                                 {/* Messages */}
                                 <ScrollArea className="flex-1 p-4">
                                     <div className="space-y-4">
                                         {messages.map((msg) => {
-                                            const isMe = msg.sender_id === user.id;
+                                            const myId = user?.id || user?._id;
+                                            const sId = msg.sender_id || msg.sender?.id;
+                                            const isMe = !!myId && !!sId && String(myId) === String(sId);
+                                            
                                             return (
                                                 <div
                                                     key={msg.id}
-                                                    className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
+                                                    className="flex w-full mb-2"
                                                     data-testid={`message-${msg.id}`}
                                                 >
                                                     <div
-                                                        className={`max-w-[70%] px-4 py-3 rounded-2xl ${isMe
-                                                            ? 'bg-white text-black rounded-br-sm'
-                                                            : 'bg-[#27272A] text-white rounded-bl-sm'
+                                                        className={`relative flex flex-col max-w-[80%] min-w-[100px] px-3 pt-1.5 pb-5 shadow-sm ${isMe
+                                                                ? 'bg-[#005c4b] text-white rounded-lg rounded-tr-none ml-auto'
+                                                                : 'bg-[#202c33] text-white rounded-lg rounded-tl-none mr-auto'
                                                             }`}
                                                     >
-                                                        <p className="text-sm">{msg.content}</p>
-                                                        <span className={`text-xs ${isMe ? 'text-zinc-600' : 'text-zinc-500'} mt-1 block`}>
-                                                            {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                        </span>
+                                                        <div className="text-[15px] leading-relaxed break-words">
+                                                            {msg.content}
+                                                        </div>
+                                                        <div className={`absolute bottom-1 right-2 text-[10px] ${isMe ? 'text-zinc-300/90' : 'text-zinc-400/90'} select-none`}>
+                                                            {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             );
@@ -246,7 +367,7 @@ export default function Messages() {
                                     <div className="flex gap-3">
                                         <Input
                                             value={newMessage}
-                                            onChange={(e) => setNewMessage(e.target.value)}
+                                            onChange={handleTyping}
                                             placeholder="Type a message..."
                                             className="input-dark flex-1"
                                             data-testid="message-input"

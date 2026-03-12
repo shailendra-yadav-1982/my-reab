@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Layout } from '../components/Layout';
@@ -51,11 +51,7 @@ export default function Directory() {
     });
     const [creating, setCreating] = useState(false);
 
-    useEffect(() => {
-        fetchProviders();
-    }, [selectedService, selectedFocus, searchQuery]);
-
-    const fetchProviders = async () => {
+    const fetchProviders = useCallback(async () => {
         setLoading(true);
         try {
             const params = new URLSearchParams();
@@ -70,7 +66,11 @@ export default function Directory() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [selectedService, selectedFocus, searchQuery]);
+
+    useEffect(() => {
+        fetchProviders();
+    }, [fetchProviders]);
 
     const handleServiceToggle = (service) => {
         setNewProvider(prev => ({
@@ -138,137 +138,139 @@ export default function Directory() {
                         <h1 className="font-lexend text-3xl font-bold mb-2">Service Directory</h1>
                         <p className="text-zinc-400">Find trusted service providers, NGOs, and support organizations</p>
                     </div>
-                    <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                        <DialogTrigger asChild>
-                            <Button className="btn-primary" data-testid="register-provider-btn">
-                                <Plus className="w-4 h-4 mr-2" />
-                                Register Provider
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="bg-[#18181B] border-[#27272A] max-w-2xl max-h-[90vh] overflow-y-auto">
-                            <DialogHeader>
-                                <DialogTitle className="font-lexend text-xl">Register Service Provider</DialogTitle>
-                            </DialogHeader>
-                            <form onSubmit={handleCreateProvider} className="space-y-4 mt-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="name">Organization Name *</Label>
-                                        <Input
-                                            id="name"
-                                            value={newProvider.name}
-                                            onChange={(e) => setNewProvider({ ...newProvider, name: e.target.value })}
-                                            required
-                                            className="input-dark"
-                                            data-testid="provider-name-input"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="location">Location *</Label>
-                                        <Input
-                                            id="location"
-                                            value={newProvider.location}
-                                            onChange={(e) => setNewProvider({ ...newProvider, location: e.target.value })}
-                                            required
-                                            placeholder="City, Country"
-                                            className="input-dark"
-                                            data-testid="provider-location-input"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="description">Description *</Label>
-                                    <Textarea
-                                        id="description"
-                                        value={newProvider.description}
-                                        onChange={(e) => setNewProvider({ ...newProvider, description: e.target.value })}
-                                        required
-                                        rows={4}
-                                        className="input-dark resize-none"
-                                        placeholder="Describe your organization and services..."
-                                        data-testid="provider-description-input"
-                                    />
-                                </div>
-                                <div className="space-y-3">
-                                    <Label>Services Offered *</Label>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                        {serviceTypes.map(service => (
-                                            <div key={service} className="flex items-center space-x-2">
-                                                <Checkbox
-                                                    id={`service-${service}`}
-                                                    checked={newProvider.services.includes(service)}
-                                                    onCheckedChange={() => handleServiceToggle(service)}
-                                                    className="border-zinc-600"
-                                                    data-testid={`service-${service.toLowerCase()}`}
-                                                />
-                                                <label htmlFor={`service-${service}`} className="text-sm cursor-pointer">
-                                                    {service}
-                                                </label>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="space-y-3">
-                                    <Label>Disability Focus</Label>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {disabilityFocusOptions.map(option => (
-                                            <div key={option.value} className="flex items-center space-x-2">
-                                                <Checkbox
-                                                    id={`focus-${option.value}`}
-                                                    checked={newProvider.disability_focus.includes(option.value)}
-                                                    onCheckedChange={() => handleFocusToggle(option.value)}
-                                                    className="border-zinc-600"
-                                                    data-testid={`focus-${option.value}`}
-                                                />
-                                                <label htmlFor={`focus-${option.value}`} className="text-sm cursor-pointer flex items-center gap-2">
-                                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: option.color }}></span>
-                                                    {option.label}
-                                                </label>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="website">Website</Label>
-                                        <Input
-                                            id="website"
-                                            type="url"
-                                            value={newProvider.website}
-                                            onChange={(e) => setNewProvider({ ...newProvider, website: e.target.value })}
-                                            placeholder="https://"
-                                            className="input-dark"
-                                            data-testid="provider-website-input"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="email">Email</Label>
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            value={newProvider.email}
-                                            onChange={(e) => setNewProvider({ ...newProvider, email: e.target.value })}
-                                            className="input-dark"
-                                            data-testid="provider-email-input"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="phone">Phone</Label>
-                                        <Input
-                                            id="phone"
-                                            type="tel"
-                                            value={newProvider.phone}
-                                            onChange={(e) => setNewProvider({ ...newProvider, phone: e.target.value })}
-                                            className="input-dark"
-                                            data-testid="provider-phone-input"
-                                        />
-                                    </div>
-                                </div>
-                                <Button type="submit" className="w-full btn-primary" disabled={creating} data-testid="submit-provider-btn">
-                                    {creating ? 'Registering...' : 'Register Provider'}
+                    {['ngo', 'service_provider'].includes(user?.user_type) && (
+                        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                            <DialogTrigger asChild>
+                                <Button className="btn-primary" data-testid="register-provider-btn">
+                                    <Plus className="w-4 h-4 mr-2" />
+                                    Register Provider
                                 </Button>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
+                            </DialogTrigger>
+                            <DialogContent className="bg-[#18181B] border-[#27272A] max-w-2xl max-h-[90vh] overflow-y-auto">
+                                <DialogHeader>
+                                    <DialogTitle className="font-lexend text-xl">Register Service Provider</DialogTitle>
+                                </DialogHeader>
+                                <form onSubmit={handleCreateProvider} className="space-y-4 mt-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="name">Organization Name *</Label>
+                                            <Input
+                                                id="name"
+                                                value={newProvider.name}
+                                                onChange={(e) => setNewProvider({ ...newProvider, name: e.target.value })}
+                                                required
+                                                className="input-dark"
+                                                data-testid="provider-name-input"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="location">Location *</Label>
+                                            <Input
+                                                id="location"
+                                                value={newProvider.location}
+                                                onChange={(e) => setNewProvider({ ...newProvider, location: e.target.value })}
+                                                required
+                                                placeholder="City, Country"
+                                                className="input-dark"
+                                                data-testid="provider-location-input"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="description">Description *</Label>
+                                        <Textarea
+                                            id="description"
+                                            value={newProvider.description}
+                                            onChange={(e) => setNewProvider({ ...newProvider, description: e.target.value })}
+                                            required
+                                            rows={4}
+                                            className="input-dark resize-none"
+                                            placeholder="Describe your organization and services..."
+                                            data-testid="provider-description-input"
+                                        />
+                                    </div>
+                                    <div className="space-y-3">
+                                        <Label>Services Offered *</Label>
+                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                            {serviceTypes.map(service => (
+                                                <div key={service} className="flex items-center space-x-2">
+                                                    <Checkbox
+                                                        id={`service-${service}`}
+                                                        checked={newProvider.services.includes(service)}
+                                                        onCheckedChange={() => handleServiceToggle(service)}
+                                                        className="border-zinc-600"
+                                                        data-testid={`service-${service.toLowerCase()}`}
+                                                    />
+                                                    <label htmlFor={`service-${service}`} className="text-sm cursor-pointer">
+                                                        {service}
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <Label>Disability Focus</Label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {disabilityFocusOptions.map(option => (
+                                                <div key={option.value} className="flex items-center space-x-2">
+                                                    <Checkbox
+                                                        id={`focus-${option.value}`}
+                                                        checked={newProvider.disability_focus.includes(option.value)}
+                                                        onCheckedChange={() => handleFocusToggle(option.value)}
+                                                        className="border-zinc-600"
+                                                        data-testid={`focus-${option.value}`}
+                                                    />
+                                                    <label htmlFor={`focus-${option.value}`} className="text-sm cursor-pointer flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: option.color }}></span>
+                                                        {option.label}
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="website">Website</Label>
+                                            <Input
+                                                id="website"
+                                                type="url"
+                                                value={newProvider.website}
+                                                onChange={(e) => setNewProvider({ ...newProvider, website: e.target.value })}
+                                                placeholder="https://"
+                                                className="input-dark"
+                                                data-testid="provider-website-input"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="email">Email</Label>
+                                            <Input
+                                                id="email"
+                                                type="email"
+                                                value={newProvider.email}
+                                                onChange={(e) => setNewProvider({ ...newProvider, email: e.target.value })}
+                                                className="input-dark"
+                                                data-testid="provider-email-input"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="phone">Phone</Label>
+                                            <Input
+                                                id="phone"
+                                                type="tel"
+                                                value={newProvider.phone}
+                                                onChange={(e) => setNewProvider({ ...newProvider, phone: e.target.value })}
+                                                className="input-dark"
+                                                data-testid="provider-phone-input"
+                                            />
+                                        </div>
+                                    </div>
+                                    <Button type="submit" className="w-full btn-primary" disabled={creating} data-testid="submit-provider-btn">
+                                        {creating ? 'Registering...' : 'Register Provider'}
+                                    </Button>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                    )}
                 </div>
 
                 {/* Filters */}
@@ -391,9 +393,11 @@ export default function Directory() {
                             <Building2 className="w-16 h-16 mx-auto mb-4 text-zinc-600" />
                             <h3 className="font-lexend text-xl mb-2">No providers found</h3>
                             <p className="text-zinc-500 mb-4">Try adjusting your filters or be the first to register!</p>
-                            <Button onClick={() => setIsCreateOpen(true)} className="btn-primary" data-testid="empty-register-btn">
-                                Register Provider
-                            </Button>
+                            {['ngo', 'service_provider'].includes(user?.user_type) && (
+                                <Button onClick={() => setIsCreateOpen(true)} className="btn-primary" data-testid="empty-register-btn">
+                                    Register Provider
+                                </Button>
+                            )}
                         </div>
                     )}
                 </div>

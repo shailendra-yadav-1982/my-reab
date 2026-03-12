@@ -39,15 +39,18 @@ The platform includes forums, a service-provider directory, event management, pr
 |---|---|
 | 🔐 **Authentication** | Register/Login with JWT, Email Verification, and Google SSO integration |
 | 💬 **Forums** | Create posts, comment, and like discussions by category and tags |
-| 📂 **Service Directory** | Browse and register disability-focused service providers |
-| 📅 **Events** | Create and attend in-person or virtual events with accessibility features |
-| 📨 **Private Messaging** | Direct messaging between community members |
+| 📂 **Service Directory** | Browse and register disability-focused service providers (Role-restricted) |
+| 📅 **Events** | Create and attend in-person or virtual events with accessibility features (Role-restricted) |
+| 📨 **Private Messaging** | Direct messaging with real-time updates, typing indicators, and online status |
 | 📚 **Resources** | Share and discover articles, links, and guides |
 | 👤 **Profiles** | View and edit personal profiles with disability categories |
-| 🏘️ **Community** | Community overview dashboard |
-| 📊 **Dashboard** | Personalized activity feed, stats, and connection requests management |
+| 🏘️ **Community** | Community directory excluding self-view |
+| ♿ **Accessibility** | Dedicated page explaining commitment and features |
+| 🔒 **Role-Based UI** | Dynamic dashboards and actions based on user type (NGO, Volunteer, etc.) |
+| 📊 **Dashboard** | Personalized activity feed, stats, and role-specific Quick Actions |
 | 🤝 **Connections** | Send and manage connection requests with community members |
 | 🔑 **Password Reset** | Recover account via email reset link (Resend integration) |
+| 🔌 **Real-time** | Live messaging, typing status, and presence via WebSockets & RabbitMQ |
 
 ---
 
@@ -77,6 +80,8 @@ The platform includes forums, a service-provider directory, event management, pr
 | bcrypt | 4.1 | Password hashing |
 | Pydantic | 2.6 | Data validation & serialisation |
 | python-dotenv | 1.0 | Environment configuration |
+| aio-pika | 9.4 | RabbitMQ integration for WebSockets |
+| RabbitMQ | 3.13 | Message broker (Scalable broadcasting) |
 
 ---
 
@@ -117,6 +122,7 @@ myenab/
 - **Node.js** v20+ and **npm**
 - **Python** 3.10+
 - **MongoDB** instance (local on port 27017 or cloud Atlas)
+- **Docker** (for running RabbitMQ)
 
 ---
 
@@ -151,7 +157,13 @@ myenab/
    MAIL_FROM=onboarding@resend.dev
    ```
 
-5. **Start the server:**
+5. **Start RabbitMQ (using Docker):**
+   ```bash
+   docker compose up -d
+   ```
+   *(Note: The system will fall back to in-memory broadcasting if RabbitMQ is not available)*
+
+6. **Start the server:**
    ```bash
    python -m uvicorn server:app --reload --port 8001
    ```
@@ -296,6 +308,7 @@ All API routes are prefixed with `/api`.
 | `/messages` | ✅ | Private messaging inbox |
 | `/community` | ✅ | Community overview |
 | `/profile` | ✅ | User profile and settings |
+| `/accessibility` | ❌ | Accessibility commitment and reporting |
 
 > Public routes redirect authenticated users to `/dashboard`. Protected routes redirect unauthenticated users to `/login`.
 

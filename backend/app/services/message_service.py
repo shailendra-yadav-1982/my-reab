@@ -25,6 +25,18 @@ async def send_message(message_data: MessageCreate, current_user: dict):
     }
     
     await db.messages.insert_one(message_doc)
+    
+    # Broadcast to recipient via WebSocket
+    try:
+        from app.core.websocket import manager
+        await manager.broadcast_to_user(message_data.recipient_id, {
+            "type": "new_message",
+            "message": {k: v for k, v in message_doc.items() if k != "_id"}
+        })
+    except Exception as e:
+        from app.core.config import logger
+        logger.error(f"Failed to broadcast message: {str(e)}")
+        
     return {k: v for k, v in message_doc.items() if k != "_id"}
 
 async def get_conversations(user_id: str):
