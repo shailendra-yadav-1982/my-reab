@@ -22,13 +22,20 @@ def get_env_required(name: str) -> str:
     return val
 
 def get_rabbit_url() -> str:
-    # Check multiple common env vars on Railway (Plugin can provide any of these)
-    url = os.environ.get('RABBITMQ_URL') or os.environ.get('RABBIT_URL') or os.environ.get('RABBITMQ_PRIVATE_URL')
+    # Check multiple common env vars on Railway
+    # CRITICAL: Always prioritize Private Network URLs for internal stability
+    url = os.environ.get('RABBITMQ_PRIVATE_URL') or \
+          os.environ.get('RABBIT_URL') or \
+          os.environ.get('RABBITMQ_URL')
     
     if not url:
         logger.info("RabbitMQ URL not found in environment, using default localhost.")
         return 'amqp://guest:guest@localhost/'
         
+    # Warn if using a public Railway URL for AMQP
+    if '.up.railway.app' in url:
+        logger.warning(f"Using public Railway URL ({url}) for RabbitMQ. This may fail as it only supports HTTP. Please use the Private Hostname instead.")
+
     # If the URL is just a hostname or doesn't have a protocol, prepend amqp://
     if '://' not in url:
         logger.info(f"RabbitMQ URL '{url}' missing protocol, prepending 'amqp://'.")

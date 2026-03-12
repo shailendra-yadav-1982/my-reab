@@ -29,7 +29,9 @@ const disabilityCategories = [
     { value: 'cognitive', label: 'Cognitive', color: '#FFD700' },
     { value: 'invisible', label: 'Invisible', color: '#F4F4F5' },
     { value: 'psychiatric', label: 'Psychiatric', color: '#38BDF8' },
-    { value: 'sensory', label: 'Sensory', color: '#34D399' }
+    { value: 'sensory', label: 'Sensory', color: '#34D399' },
+    { value: 'multiple', label: 'Multiple', color: '#FFFFFF' },
+    { value: 'prefer_not_to_say', label: 'Prefer not to say', color: '#71717A' }
 ];
 
 export default function Community() {
@@ -39,6 +41,7 @@ export default function Community() {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedType, setSelectedType] = useState('all');
     const [selectedCategory, setSelectedCategory] = useState('all');
+    const [connections, setConnections] = useState([]);
 
     const fetchMembers = useCallback(async () => {
         setLoading(true);
@@ -63,7 +66,17 @@ export default function Community() {
 
     useEffect(() => {
         fetchMembers();
+        fetchConnections();
     }, [fetchMembers]);
+
+    const fetchConnections = async () => {
+        try {
+            const response = await axios.get(`${API}/connections`);
+            setConnections(response.data);
+        } catch (error) {
+            console.error('Failed to fetch connections:', error);
+        }
+    };
 
     const filteredMembers = members.filter(member => {
         // Don't show current user
@@ -174,12 +187,14 @@ export default function Community() {
 
                                     <div className="flex flex-col gap-2 mt-auto">
                                         <ConnectButton userId={member.id} className="w-full" />
-                                        <Link to={`/messages`} className="w-full">
-                                            <Button variant="outline" size="sm" className="w-full btn-secondary py-2" data-testid={`message-btn-${member.id}`}>
-                                                <MessageSquare className="w-4 h-4 mr-2" />
-                                                Message
-                                            </Button>
-                                        </Link>
+                                        {connections.some(c => (c.sender_id === member.id || c.receiver_id === member.id) && c.status === 'accepted') && (
+                                            <Link to={`/messages`} className="w-full">
+                                                <Button variant="outline" size="sm" className="w-full btn-secondary py-2" data-testid={`message-btn-${member.id}`}>
+                                                    <MessageSquare className="w-4 h-4 mr-2" />
+                                                    Message
+                                                </Button>
+                                            </Link>
+                                        )}
                                     </div>
                                 </CardContent>
                             </Card>

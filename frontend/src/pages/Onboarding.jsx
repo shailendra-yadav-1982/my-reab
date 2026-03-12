@@ -25,6 +25,7 @@ const disabilityCategories = [
     { value: 'invisible', label: 'Invisible / Undiagnosed', color: '#F4F4F5' },
     { value: 'psychiatric', label: 'Psychiatric / Emotional', color: '#38BDF8' },
     { value: 'sensory', label: 'Sensory', color: '#34D399' },
+    { value: 'multiple', label: 'Multiple Disabilities', color: '#FFFFFF' },
     { value: 'prefer_not_to_say', label: 'Prefer not to say', color: '#71717A' }
 ];
 
@@ -49,6 +50,18 @@ export default function Onboarding() {
             setToken(token);
         }
     }, [searchParams, setToken]);
+
+    // Sync formData once user is loaded
+    useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                user_type: user.user_type || prev.user_type,
+                location: user.location || prev.location,
+                disability_categories: user.disability_categories || prev.disability_categories
+            }));
+        }
+    }, [user]);
 
     const handleCategoryToggle = (category) => {
         setFormData(prev => ({
@@ -124,7 +137,7 @@ export default function Onboarding() {
                                 />
                             </div>
 
-                            {formData.user_type === 'individual_disabled' && (
+                            {['individual_disabled', 'caregiver'].includes(formData.user_type) && (
                                 <div className="space-y-3">
                                     <Label className="text-zinc-200">Disability Categories (Optional)</Label>
                                     <div className="grid grid-cols-2 gap-3">

@@ -4,12 +4,21 @@ from typing import List
 from fastapi import HTTPException
 from app.core.database import db
 from app.models.message import MessageCreate
+from app.services import connection_service
 
 async def send_message(message_data: MessageCreate, current_user: dict):
     # Check recipient exists
     recipient = await db.users.find_one({"id": message_data.recipient_id})
     if not recipient:
         raise HTTPException(status_code=404, detail="Recipient not found")
+    
+    # Check if they are connected
+    connection = await connection_service.get_connection_status(current_user["id"], message_data.recipient_id)
+    if not connection or connection.get("status") != "accepted":
+        raise HTTPException(
+            status_code=403, 
+            detail="You can only message members you are connected with. Please send a connection request first."
+        )
     
     message_id = str(uuid.uuid4())
     now = datetime.now(timezone.utc).isoformat()

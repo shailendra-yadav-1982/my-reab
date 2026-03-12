@@ -10,7 +10,7 @@ import { Toaster, toast } from 'sonner';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Search, Send, MessageSquare, ArrowLeft } from 'lucide-react';
 
-import { API_URL as API } from '../config';
+import { API_URL as API, SOCKET_URL } from '../config';
 
 export default function Messages() {
     const { user } = useAuth();
@@ -22,7 +22,8 @@ export default function Messages() {
     const [sending, setSending] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
-    const messagesEndRef = useRef(null);
+    const [connections, setConnections] = useState([]);
+    const [loadingConnections, setLoadingConnections] = useState(true);
 
     const [ws, setWs] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState(new Set());
@@ -37,12 +38,7 @@ export default function Messages() {
 
     useEffect(() => {
         if (!user?.id) return;
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsHost = process.env.NODE_ENV === 'production' 
-            ? window.location.host 
-            : 'localhost:8000';
-            
-        const socket = new WebSocket(`${protocol}//${wsHost}/api/ws/${user.id}`);
+        const socket = new WebSocket(`${SOCKET_URL}/api/ws/${user.id}`);
 
         socket.onopen = () => {
             console.log('WebSocket Connected');
@@ -127,7 +123,19 @@ export default function Messages() {
 
     useEffect(() => {
         fetchConversations();
+        fetchConnections();
     }, []);
+
+    const fetchConnections = async () => {
+        try {
+            const response = await axios.get(`${API}/connections`);
+            setConnections(response.data);
+        } catch (error) {
+            console.error('Failed to fetch connections:', error);
+        } finally {
+            setLoadingConnections(false);
+        }
+    };
 
     useEffect(() => {
         if (selectedUser) {
@@ -135,13 +143,6 @@ export default function Messages() {
         }
     }, [selectedUser]);
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
-
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    };
 
     const fetchConversations = async () => {
         try {
@@ -163,19 +164,23 @@ export default function Messages() {
         }
     };
 
-    const handleSearch = async (query) => {
+    const handleSearch = (query) => {
         setSearchQuery(query);
-        if (query.trim().length < 2) {
+        if (query.trim().length < 1) {
             setSearchResults([]);
             return;
         }
-        try {
-            const response = await axios.get(`${API}/users?search=${encodeURIComponent(query)}&limit=20`);
-            const results = response.data.filter(u => u.id !== user.id);
-            setSearchResults(results);
-        } catch (error) {
-            console.error('Failed to search users:', error);
-        }
+        
+        // Search within connections
+        const results = connections.filter(conn => {
+            const partnerName = conn.sender_id === user.id ? conn.receiver_name : conn.sender_name;
+            return partnerName.toLowerCase().includes(query.toLowerCase());
+        }).map(conn => ({
+            id: conn.sender_id === user.id ? conn.receiver_id : conn.sender_id,
+            name: conn.sender_id === user.id ? conn.receiver_name : conn.sender_name
+        }));
+        
+        setSearchResults(results);
     };
 
     const handleSendMessage = async (e) => {
@@ -243,7 +248,6 @@ export default function Messages() {
                                             key={u.id}
                                             onClick={() => selectUserFromSearch(u)}
                                             className="w-full px-4 py-3 text-left hover:bg-[#27272A] flex items-center gap-3"
-                                            data-testid={`search-result-${u.id}`}
                                         >
                                             <div className="relative">
                                                 <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center font-bold">
@@ -260,6 +264,45 @@ export default function Messages() {
                             )}
                         </div>
                         <ScrollArea className="flex-1">
+                            {/* Connected Members Section */}
+                            {!searchQuery && connections.length > 0 && (
+                                <div className="py-4 border-b border-[#27272A]">
+                                    <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3 px-4">Connected Members</h3>
+                                    <div className="flex gap-4 overflow-x-auto -mx-4 px-4 pb-4 pt-1 no-scrollbar">
+                                        {connections.map(conn => {
+                                            const partnerId = conn.sender_id === user.id ? conn.receiver_id : conn.sender_id;
+                                            const partnerName = conn.sender_id === user.id ? conn.receiver_name : conn.sender_name;
+                                            const isOnline = onlineUsers.has(String(partnerId));
+                                            
+                                            const isSelected = selectedUser?.id === partnerId;
+                                            
+                                            return (
+                                                <button
+                                                    key={partnerId}
+                                                    onClick={() => setSelectedUser({ id: partnerId, name: partnerName })}
+                                                    className={`flex flex-col items-center gap-1 min-w-[64px] p-2 m-0.5 rounded-xl transition-colors ${isSelected ? 'bg-[#2a3942]' : 'hover:bg-[#202c33]'}`}
+                                                >
+                                                    <div className="relative">
+                                                        <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${isOnline ? 'bg-zinc-700 border-2 border-green-500' : 'bg-zinc-800 border border-[#27272A]'}`}>
+                                                            {partnerName[0]}
+                                                        </div>
+                                                        {isOnline && (
+                                                            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[#18181B]"></div>
+                                                        )}
+                                                    </div>
+                                                    <span className={`text-[10px] truncate w-16 text-center ${isSelected ? 'text-white font-medium' : 'text-zinc-400'}`}>
+                                                        {partnerName.split(' ')[0]}
+                                                    </span>
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="p-4 py-2 bg-[#1c1c1f] text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
+                                Recent Chats
+                            </div>
                             {loading ? (
                                 <div className="p-4 text-center text-zinc-500">Loading...</div>
                             ) : conversations.length > 0 ? (
@@ -358,7 +401,6 @@ export default function Messages() {
                                                 </div>
                                             );
                                         })}
-                                        <div ref={messagesEndRef} />
                                     </div>
                                 </ScrollArea>
 

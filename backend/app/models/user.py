@@ -9,7 +9,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     name: str
-    user_type: str = "individual"
+    user_type: str = "individual_disabled"
     organization_name: Optional[str] = None
     disability_categories: List[str] = []
     bio: Optional[str] = None
@@ -23,23 +23,26 @@ class UserResponse(BaseModel):
     id: str
     email: str
     name: str
-    user_type: str = "individual"
+    user_type: str = "individual_disabled"
     organization_name: Optional[str] = None
     disability_categories: List[str] = []
     bio: Optional[str] = None
     location: Optional[str] = None
     avatar_url: Optional[str] = None
+    onboarding_complete: bool = False
     created_at: Optional[str] = None
     is_verified: bool = False
     auth_provider: Optional[str] = None
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
+    user_type: Optional[str] = None
     bio: Optional[str] = None
     location: Optional[str] = None
     disability_categories: Optional[List[str]] = None
     organization_name: Optional[str] = None
     avatar_url: Optional[str] = None
+    onboarding_complete: Optional[bool] = None
 
 class PasswordResetRequest(BaseModel):
     email: EmailStr
