@@ -1,3 +1,4 @@
+import os
 import asyncio
 import json
 import aio_pika
@@ -60,7 +61,9 @@ class WebSocketManager:
             asyncio.create_task(self.consume_messages())
             return True
         except Exception as e:
-            logger.warning(f"RabbitMQ unavailable, using in-memory fallback: {str(e)}")
+            import traceback
+            error_details = traceback.format_exc() if os.environ.get('DEBUG') else f"{type(e).__name__}: {str(e)}"
+            logger.warning(f"RabbitMQ unavailable, using in-memory fallback. Error: {error_details}")
             return False
 
     async def broadcast_to_user(self, user_id: str, message: dict):

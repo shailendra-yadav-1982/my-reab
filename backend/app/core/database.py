@@ -1,14 +1,12 @@
 import logging
 from motor.motor_asyncio import AsyncIOMotorClient
-from .config import get_env_required
-
-logger = logging.getLogger(__name__)
+from .config import MONGO_URL, get_env_required, logger
+import os
 
 # MongoDB connection
 try:
-    mongo_url = get_env_required('MONGO_URL')
-    db_name = get_env_required('DB_NAME')
-    client = AsyncIOMotorClient(mongo_url)
+    db_name = os.environ.get('DB_NAME', 'disability_inclusion_connect')
+    client = AsyncIOMotorClient(MONGO_URL)
     db = client[db_name]
     logger.info("Database connection initialized")
 except Exception as e:

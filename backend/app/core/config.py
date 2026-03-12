@@ -22,14 +22,19 @@ def get_env_required(name: str) -> str:
     return val
 
 def get_rabbit_url() -> str:
-    url = os.environ.get('RABBITMQ_URL') or os.environ.get('RABBIT_URL')
+    # Check multiple common env vars on Railway (Plugin can provide any of these)
+    url = os.environ.get('RABBITMQ_URL') or os.environ.get('RABBIT_URL') or os.environ.get('RABBITMQ_PRIVATE_URL')
+    
     if not url:
+        logger.info("RabbitMQ URL not found in environment, using default localhost.")
         return 'amqp://guest:guest@localhost/'
-    # If it's just a hostname (common mistake on Railway), prepend protocol
+        
+    # If the URL is just a hostname or doesn't have a protocol, prepend amqp://
     if '://' not in url:
-        return f"amqp://{url}"
+        logger.info(f"RabbitMQ URL '{url}' missing protocol, prepending 'amqp://'.")
+        url = f"amqp://{url}"
+        
     return url
-
 # Database & RabbitMQ
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 RABBIT_URL = get_rabbit_url()
