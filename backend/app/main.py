@@ -30,7 +30,7 @@ app.add_middleware(
     SessionMiddleware, 
     secret_key=os.environ.get('JWT_SECRET', 'temp-secret-key-for-sessions'),
     https_only=IS_PROD,
-    same_site="lax"
+    same_site="none" if IS_PROD else "lax" # Set to "none" for cross-site cookies with HTTPS, "lax" for development
 )
 
 # Include API Router

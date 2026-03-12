@@ -31,6 +31,23 @@ class WebSocketManager:
     async def init_rabbitmq(self):
         """Initialize RabbitMQ connection and exchange with fallback"""
         try:
+            # Redact password for safe logging
+            safe_url = self.rabbitmq_url
+            if '@' in safe_url:
+                try:
+                    # amqp://user:pass@host:port/
+                    parts = safe_url.split('@')
+                    credentials = parts[0].split(':')
+                    host_info = parts[1]
+                    if len(credentials) > 2:
+                        # has protocol and user:pass
+                        safe_url = f"{credentials[0]}:{credentials[1]}:***@{host_info}"
+                    else:
+                        safe_url = f"{credentials[0]}:***@{host_info}"
+                except Exception:
+                    safe_url = "[Malformed URL]"
+            
+            logger.info(f"Attempting to connect to RabbitMQ: {safe_url}")
             self.connection = await aio_pika.connect_robust(
                 self.rabbitmq_url,
                 timeout=5 # Don't hang forever if RabbitMQ is down

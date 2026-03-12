@@ -21,9 +21,18 @@ def get_env_required(name: str) -> str:
         raise RuntimeError(f"ENVIRONMENT ERROR: '{name}' is required but not set.")
     return val
 
+def get_rabbit_url() -> str:
+    url = os.environ.get('RABBITMQ_URL') or os.environ.get('RABBIT_URL')
+    if not url:
+        return 'amqp://guest:guest@localhost/'
+    # If it's just a hostname (common mistake on Railway), prepend protocol
+    if '://' not in url:
+        return f"amqp://{url}"
+    return url
+
 # Database & RabbitMQ
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
-RABBIT_URL = os.environ.get('RABBITMQ_URL', os.environ.get('RABBIT_URL', 'amqp://guest:guest@localhost/'))
+RABBIT_URL = get_rabbit_url()
 
 # JWT Configuration
 JWT_SECRET = os.environ.get('JWT_SECRET', 'temp-secret-change-me-in-production')

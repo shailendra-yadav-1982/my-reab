@@ -10,13 +10,13 @@ async def sso_login(request: Request):
     if not OIDC_ISSUER_URL:
         raise HTTPException(status_code=400, detail="SSO not configured")
     
-    redirect_uri = str(request.url_for('sso_callback'))
-    from app.core.config import logger
-    
     # If running behind a proxy or on Railway, ensure https
+    redirect_uri = str(request.url_for('sso_callback'))
     if os.environ.get('RAILWAY_STATIC_URL') or os.environ.get('ENVIRONMENT') == 'production':
+        # Railway gives us HTTP internal URLs, but we need HTTPS for Google callback
         redirect_uri = redirect_uri.replace('http://', 'https://')
-        
+    
+    from app.core.config import logger
     logger.info(f"Initiating SSO login. Redirect URI: {redirect_uri}")
     return await oauth.oidc.authorize_redirect(request, redirect_uri)
 
